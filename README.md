@@ -1,36 +1,44 @@
-# Khmer Living Archive — starter
+# Khmer Architecture Archive
 
-This is the starting point for your ICT 340 capstone: a community archive that preserves a piece of Khmer culture. Right now it's one page. By December it will browse, search, take contributions, and publish reviewed entries. Same skeleton for everyone; the collection is yours.
+A living digital archive of Cambodian architectural heritage, built in ICT 340 at AUPP. Documenting structures from ancient Angkorian temples to Vann Molyvann's New Khmer modernism.
 
-## Lab 1: get this live
+**Curated by:** Lim Houykea · **Source:** Phnom Penh City
 
-Follow the Lab 1 guide on Canvas. The short version:
+---
 
-1. Click **Use this template** (top right) → **Create a new repository**. Name it after your archive.
-2. Go to [vercel.com](https://vercel.com), sign in with GitHub, **Add New → Project**, import your new repository, and click **Deploy**.
-3. Clone your repo, open it in VS Code, edit `collection.config.js` (the only file you touch today), then commit and push:
+## Core Features
 
-   ```bash
-   git clone https://github.com/YOUR-USERNAME/YOUR-REPO-NAME.git
-   cd YOUR-REPO-NAME
-   code .
-   # edit collection.config.js, then:
-   git add .
-   git commit -m "make it mine"
-   git push
-   ```
+- **Landing Page (`/`)** — Hero split-view with Angkor Wat imagery, editorial offset title, about strip with image grid, two-pillar mission statement, and featured landmark showcase grid
+- **Archive (`/archive`)** — Full landmark catalog with client-side era filter (All / Pre-Angkorian / Angkorian / Post-Angkorian / New Khmer / Contemporary); alternating image-and-text card layout; 8 real Khmer buildings with Khmer script names
+- **Eras & Timeline (`/timeline`)** — Five chronological eras rendered as editorial rows with large number, era name in English + Khmer (e.g. សម័យអង្គរ), date range, description, thumbnail image, and linked landmark pills
+- **Map (`/map`)** — Split layout: province list on the left with landmark counts; live OpenStreetMap iframe centered on Cambodia on the right — no API key required
+- **About / Contribute (`/about`)** — Curator and source credits pulled from `collection.config.js`; preservation goals list; numbered four-step contribution guide; visual submission form
 
-4. Watch Vercel redeploy on its own, then submit your live URL to the Lab 1 assignment on Canvas.
+## Architecture & Design
 
-## Running it locally (optional today, needed from week 2)
+- **Stack:** Next.js 15 App Router, React 19, JavaScript only
+- **Styling:** Inline style objects + `app/globals.css` (no CSS framework)
+- **Fonts:** Cormorant Garamond (editorial serif headings) + Inter (body) via Google Fonts
+- **Color palette:** Parchment white `#FAFAF8`, near-black `#1A1A1A`, sandstone gold `#C9A96E`
+- **Data source:** `lib/landmarks.js` — single array of 8 landmark objects shared by Archive and Timeline
+- **Config source:** `collection.config.js` — archive name, description, curator, source read by NavBar, Footer, and About page
+
+## Components
+
+- `components/NavBar.js` — Sticky top nav, active-link gold underline via `usePathname()`, scroll-triggered border
+- `components/Footer.js` — Dark three-column footer; all values read from `collection.config.js`
+
+## Running Locally
 
 ```bash
 npm install
 npm run dev
+# open http://localhost:3000
 ```
 
-Then open http://localhost:3000.
+## Rules
 
-## Rules of the road
-
-You own what you ship. Every line that lands in this repository is yours to explain, whoever or whatever wrote it.
+- JavaScript only — no TypeScript
+- No new npm packages beyond the three in `package.json`
+- Khmer text is preserved exactly — never transliterated or removed
+- Every value in NavBar, Footer, and About reads from `collection.config.js`
