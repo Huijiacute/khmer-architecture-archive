@@ -1,6 +1,8 @@
 import Link from "next/link";
 import collection from "../collection.config.js";
 import landmarks from "../lib/landmarks.js";
+import EntryCard from "../components/EntryCard.js";
+import SmallEntryCard from "../components/SmallEntryCard.js";
 
 /* ── Hero section ─────────────────────────────────────── */
 function Hero() {
@@ -399,14 +401,71 @@ function FeaturedGrid() {
   );
 }
 
+/* ── Featured Entry Card Section ─────────────────────────── */
+function FeaturedEntrySection() {
+  const section = {
+    padding: "60px 40px 20px",
+    maxWidth: 1200,
+    margin: "0 auto",
+  };
+
+  const description =
+    "Khmer Architecture Archive is a collection of a prominent Khmer Architect Vann Molyvann (1926–2017) located in Phnom Penh City. This collection explores his visionary \"New Khmer Architecture\" movement, which uniquely blended modernist design with traditional Khmer aesthetics to create iconic structures like the Royal University of Fine Arts. The archive serves as a vital resource for understanding how Molyvann defined the modern identity of Cambodia through his sustainable and culturally rich masterpieces.";
+
+  const story =
+    "During the Sangkum Reastr Niyum era (1953–1970), King Norodom Sihanouk appointed Paris-trained architect Vann Molyvann as State Architect to spearhead Cambodia's modernization. Molyvann pioneered 'New Khmer Architecture' (ស្ថាបត្យកម្មប្រពៃណីខ្មែរបែបទំនើប)—an extraordinary fusion of Bauhaus and Corbusian concrete modernism with ancient Angkorian wisdom. He integrated passive climate conditioning: elevated pilings against tropical floods, double roofs for heat dispersion, and intricate brise-soleil lattice screens for natural air cross-ventilation, forever reshaping Cambodia's modern urban landscape.";
+
+  const places = [
+    "RUFA (Royal University of Fine Arts)",
+    "Chaktomuk Conference Hall",
+    "Independence Monument",
+    "Institute of Foreign Languages (IFL)",
+    "Brown Coffee",
+  ];
+
+  return (
+    <section style={section}>
+      <EntryCard
+        title={collection.name}
+        khmerTitle="បណ្ណសារស្ថាបត្យកម្មខ្មែរ"
+        tag="Featured Heritage Entry"
+        description={description}
+        story={story}
+        contributor="RUFA, Chaktomuk Conference Hall, Independence Monument, Brown Coffee, Institute of Foreign Language"
+        places={places}
+        actionHref="/archive"
+        actionText="Browse Architecture Archive →"
+      />
+    </section>
+  );
+}
+
+/* ── RUFA Small Entry Card Section ─────────────────────────── */
+function RufaEntrySection() {
+  const section = {
+    padding: "20px 40px 60px",
+    maxWidth: 1200,
+    margin: "0 auto",
+  };
+
+  return (
+    <section style={section}>
+      <SmallEntryCard />
+    </section>
+  );
+}
+
 /* ── Page export ─────────────────────────────────────────── */
 export default function HomePage() {
   return (
     <>
       <Hero />
+      <FeaturedEntrySection />
+      <RufaEntrySection />
       <AboutStrip />
       <Mission />
       <FeaturedGrid />
     </>
   );
 }
+
