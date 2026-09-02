@@ -2,21 +2,73 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import landmarks from "../../lib/landmarks.js";
+import entries from "../../data/entries.js";
+import EntryCard from "../../components/EntryCard.js";
 
 const eras = ["All", "Pre-Angkorian", "Angkorian", "Post-Angkorian", "New Khmer", "Contemporary"];
 
 export default function ArchivePage() {
   const [activeEra, setActiveEra] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const filtered =
-    activeEra === "All"
-      ? landmarks
-      : landmarks.filter((l) => l.era === activeEra);
+  /* ── Filter entries by era and search term ── */
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+
+  const filtered = entries.filter((entry) => {
+    // 1. Era filter
+    if (activeEra !== "All" && entry.era !== activeEra) {
+      return false;
+    }
+
+    // 2. Search filter
+    if (!normalizedQuery) {
+      return true;
+    }
+
+    const corpus = [
+      entry.title,
+      entry.name,
+      entry.khmerTitle,
+      entry.nameKhmer,
+      entry.era,
+      entry.location,
+      entry.year,
+      entry.tag,
+      entry.description,
+      entry.story,
+      entry.contributor,
+      ...(entry.places || []),
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    return corpus.includes(normalizedQuery);
+  });
+
+  const handleInputChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      // searchQuery is already filtering live as you type
+    }
+  };
+
+  const handleClear = () => {
+    setSearchQuery("");
+  };
+
+  const handleResetAll = () => {
+    setSearchQuery("");
+    setActiveEra("All");
+  };
 
   /* ── styles ── */
   const pageHeader = {
-    padding: "80px 40px 60px",
+    padding: "80px 40px 40px",
     maxWidth: 1200,
     margin: "0 auto",
     borderBottom: "1px solid #E5E0D8",
@@ -38,12 +90,69 @@ export default function ArchivePage() {
     color: "#1A1A1A",
     lineHeight: 1.0,
     display: "block",
-    marginBottom: 48,
+    marginBottom: 40,
+  };
+
+  const searchControls = {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: 12,
+    alignItems: "center",
+    marginBottom: 32,
+  };
+
+  const searchBox = {
+    display: "flex",
+    alignItems: "center",
+    flex: "1 1 360px",
+    maxWidth: 640,
+    position: "relative",
+    border: "1px solid #D0C9BF",
+    backgroundColor: "#FFFFFF",
+    transition: "border-color 0.2s ease",
+  };
+
+  const searchInput = {
+    flex: 1,
+    fontFamily: "'Inter', sans-serif",
+    fontSize: 14,
+    color: "#1A1A1A",
+    backgroundColor: "transparent",
+    border: "none",
+    padding: "12px 16px",
+    outline: "none",
+  };
+
+  const clearBtn = {
+    fontFamily: "'Inter', sans-serif",
+    fontSize: 12,
+    color: "#8A8A8A",
+    background: "none",
+    border: "none",
+    padding: "8px 14px",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
+  };
+
+  const searchBtn = {
+    fontFamily: "'Inter', sans-serif",
+    fontSize: 11,
+    fontWeight: 600,
+    letterSpacing: "0.14em",
+    textTransform: "uppercase",
+    backgroundColor: "#1A1A1A",
+    color: "#FAFAF8",
+    border: "1px solid #1A1A1A",
+    padding: "12px 24px",
+    cursor: "pointer",
+    transition: "all 0.2s ease",
   };
 
   const filterBar = {
     display: "flex",
-    gap: 4,
+    gap: 6,
     flexWrap: "wrap",
   };
 
@@ -53,7 +162,7 @@ export default function ArchivePage() {
     fontWeight: 500,
     letterSpacing: "0.14em",
     textTransform: "uppercase",
-    padding: "10px 20px",
+    padding: "10px 18px",
     border: "1px solid",
     borderColor: activeEra === era ? "#1A1A1A" : "#D0C9BF",
     backgroundColor: activeEra === era ? "#1A1A1A" : "transparent",
@@ -65,84 +174,51 @@ export default function ArchivePage() {
   const listWrap = {
     maxWidth: 1200,
     margin: "0 auto",
-    padding: "0 40px 80px",
+    padding: "48px 40px 80px",
   };
 
-  /* Card row: alternating image-left / image-right (always left for simplicity) */
-  const card = {
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr",
-    gap: 0,
-    borderBottom: "1px solid #E5E0D8",
-    minHeight: 320,
-  };
-
-  const cardImg = {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    display: "block",
-  };
-
-  const cardBody = {
-    padding: "48px 48px 48px 60px",
+  const statusStrip = {
     display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexWrap: "wrap",
+    gap: 12,
+    marginBottom: 32,
+    paddingBottom: 16,
+    borderBottom: "1px solid #E5E0D8",
+    fontSize: 13,
+    color: "#6A6A6A",
   };
 
-  const eraTag = {
-    fontFamily: "'Inter', sans-serif",
-    fontSize: 11,
-    fontWeight: 500,
-    letterSpacing: "0.14em",
-    textTransform: "uppercase",
+  const emptyStateWrap = {
+    padding: "72px 32px",
+    textAlign: "center",
+    backgroundColor: "#F7F5F0",
+    border: "1px dashed #D0C9BF",
+    margin: "24px 0",
+  };
+
+  const emptyIcon = {
+    fontFamily: "'Cormorant Garamond', serif",
+    fontSize: 48,
     color: "#C9A96E",
     marginBottom: 16,
   };
 
-  const cardTitle = {
+  const emptyTitle = {
     fontFamily: "'Cormorant Garamond', serif",
-    fontSize: 36,
-    fontWeight: 600,
+    fontSize: 32,
+    fontWeight: 700,
     color: "#1A1A1A",
-    marginBottom: 8,
-    lineHeight: 1.1,
+    marginBottom: 10,
   };
 
-  const cardKhmer = {
-    fontFamily: "'Cormorant Garamond', serif",
-    fontSize: 18,
-    fontWeight: 300,
-    color: "#9A9A9A",
-    marginBottom: 20,
-  };
-
-  const cardDesc = {
+  const emptyDesc = {
     fontSize: 14,
     color: "#6A6A6A",
-    lineHeight: 1.85,
-    marginBottom: 28,
-    maxWidth: 400,
-  };
-
-  const viewMore = {
-    fontFamily: "'Inter', sans-serif",
-    fontSize: 11,
-    fontWeight: 500,
-    letterSpacing: "0.14em",
-    textTransform: "uppercase",
-    color: "#1A1A1A",
-    display: "flex",
-    alignItems: "center",
-    gap: 10,
-    textDecoration: "none",
-  };
-
-  const locationTag = {
-    fontSize: 12,
-    color: "#9A9A9A",
-    marginBottom: 4,
+    maxWidth: 480,
+    margin: "0 auto 24px",
+    lineHeight: 1.7,
   };
 
   return (
@@ -150,6 +226,42 @@ export default function ArchivePage() {
       <div style={pageHeader}>
         <span style={lightTitle}>Our</span>
         <span style={boldTitle}>Archive</span>
+
+        {/* ── Search bar with functional search button and clear button ── */}
+        <div style={searchControls}>
+          <div style={searchBox}>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+              placeholder="Search by landmark, architect, era, keyword, or Khmer (e.g. Angkor, Molyvann, វិមានឯករាជ្យ)..."
+              style={searchInput}
+              aria-label="Search architecture archive"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={handleClear}
+                style={clearBtn}
+                title="Clear search"
+                aria-label="Clear search input"
+              >
+                ✕ Clear
+              </button>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={() => {}}
+            style={searchBtn}
+            aria-label="Search"
+          >
+            Search
+          </button>
+        </div>
+
+        {/* ── Era filter buttons ── */}
         <div style={filterBar}>
           {eras.map((era) => (
             <button
@@ -165,35 +277,88 @@ export default function ArchivePage() {
       </div>
 
       <div style={listWrap}>
-        {filtered.length === 0 && (
-          <p style={{ padding: "60px 0", color: "#9A9A9A", fontSize: 14 }}>
-            No entries in this era yet.
-          </p>
-        )}
-        {filtered.map((lm) => (
-          <div key={lm.id} style={card}>
-            <div style={{ overflow: "hidden", maxHeight: 360 }}>
-              <img src={lm.imageUrl} alt={lm.name} style={cardImg} />
+        {/* ── Search and Filter Status Bar ── */}
+        {(searchQuery || activeEra !== "All") && (
+          <div style={statusStrip}>
+            <div>
+              <span>
+                Showing <strong>{filtered.length}</strong> {filtered.length === 1 ? "entry" : "entries"}
+              </span>
+              {searchQuery && (
+                <span> matching &ldquo;<strong>{searchQuery}</strong>&rdquo;</span>
+              )}
+              {activeEra !== "All" && (
+                <span> in <strong>{activeEra}</strong></span>
+              )}
             </div>
-            <div style={cardBody}>
-              <p style={eraTag}>{lm.era} · {lm.location}</p>
-              <h2 style={cardTitle}>{lm.name}</h2>
-              <p style={cardKhmer}>{lm.nameKhmer}</p>
-              <p style={locationTag}>{lm.year}</p>
-              <p style={cardDesc}>{lm.description}</p>
-              <span style={viewMore}>View More →</span>
-            </div>
+            <button
+              type="button"
+              onClick={handleResetAll}
+              style={{
+                background: "none",
+                border: "none",
+                color: "#C9A96E",
+                cursor: "pointer",
+                fontFamily: "'Inter', sans-serif",
+                fontSize: 12,
+                fontWeight: 600,
+                textDecoration: "underline",
+              }}
+            >
+              Reset Filters
+            </button>
           </div>
+        )}
+
+        {/* ── Decent Empty State ── */}
+        {filtered.length === 0 && (
+          <div style={emptyStateWrap}>
+            <div style={emptyIcon}>⌕</div>
+            <h2 style={emptyTitle}>No Entries Found</h2>
+            <p style={emptyDesc}>
+              We couldn&apos;t find any architectural archive entries matching &ldquo;<strong>{searchQuery}</strong>&rdquo;
+              {activeEra !== "All" ? ` in the ${activeEra} era.` : "."}
+              <br />
+              Try searching with another keyword, an architect&apos;s name, or Khmer script.
+            </p>
+            <button
+              type="button"
+              onClick={handleResetAll}
+              className="btn-primary"
+              style={{ cursor: "pointer" }}
+            >
+              Clear Search &amp; Show All
+            </button>
+          </div>
+        )}
+
+        {/* ── Every entry visible through EntryCard ── */}
+        {filtered.map((entry) => (
+          <EntryCard
+            key={entry.id}
+            title={entry.title || entry.name}
+            khmerTitle={entry.khmerTitle || entry.nameKhmer}
+            tag={`${entry.era} · ${entry.location} · ${entry.year}`}
+            description={entry.description}
+            story={entry.story}
+            contributor={entry.contributor}
+            places={entry.places}
+            imageUrl={entry.imageUrl}
+            actionHref="/timeline"
+            actionText="View in Timeline →"
+          />
         ))}
 
-        {/* Pagination counter */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12, paddingTop: 40 }}>
-          <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, fontWeight: 700 }}>01</span>
-          <span style={{ color: "#C9A96E" }}>/</span>
-          <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 16, color: "#9A9A9A" }}>
-            {String(filtered.length).padStart(2, "0")}
-          </span>
-        </div>
+        {/* ── Pagination / Count Indicator ── */}
+        {filtered.length > 0 && (
+          <div style={{ display: "flex", alignItems: "center", gap: 12, paddingTop: 24 }}>
+            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, fontWeight: 700 }}>01</span>
+            <span style={{ color: "#C9A96E" }}>/</span>
+            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 16, color: "#9A9A9A" }}>
+              {String(filtered.length).padStart(2, "0")}
+            </span>
+          </div>
+        )}
       </div>
     </>
   );
