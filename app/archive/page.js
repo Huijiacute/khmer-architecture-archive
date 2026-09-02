@@ -10,6 +10,8 @@ const eras = ["All", "Pre-Angkorian", "Angkorian", "Post-Angkorian", "New Khmer"
 export default function ArchivePage() {
   const [activeEra, setActiveEra] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchHovered, setIsSearchHovered] = useState(false);
+  const [isClearHovered, setIsClearHovered] = useState(false);
 
   /* ── Filter entries by era and search term ── */
   const normalizedQuery = searchQuery.trim().toLowerCase();
@@ -118,14 +120,16 @@ export default function ArchivePage() {
   const clearBtn = {
     fontFamily: "'Inter', sans-serif",
     fontSize: 12,
-    color: "#8A8A8A",
-    background: "none",
+    color: isClearHovered ? "#1A1A1A" : "#8A8A8A",
+    backgroundColor: isClearHovered ? "#EAE5DB" : "transparent",
     border: "none",
-    padding: "8px 14px",
+    padding: "6px 12px",
+    borderRadius: 2,
     cursor: "pointer",
     display: "flex",
     alignItems: "center",
     gap: 4,
+    transition: "all 0.2s ease",
   };
 
   const searchBtn = {
@@ -134,12 +138,17 @@ export default function ArchivePage() {
     fontWeight: 600,
     letterSpacing: "0.14em",
     textTransform: "uppercase",
-    backgroundColor: "#1A1A1A",
+    backgroundColor: isSearchHovered ? "#C9A96E" : "#1A1A1A",
     color: "#FAFAF8",
-    border: "1px solid #1A1A1A",
-    padding: "12px 24px",
+    border: `1px solid ${isSearchHovered ? "#C9A96E" : "#1A1A1A"}`,
+    padding: "12px 26px",
     cursor: "pointer",
-    transition: "all 0.2s ease",
+    transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 8,
+    transform: isSearchHovered ? "translateY(-1px)" : "translateY(0)",
+    boxShadow: isSearchHovered ? "0 4px 14px rgba(201, 169, 110, 0.35)" : "none",
   };
 
   const filterBar = {
@@ -267,6 +276,8 @@ export default function ArchivePage() {
               <button
                 type="button"
                 onClick={handleClear}
+                onMouseEnter={() => setIsClearHovered(true)}
+                onMouseLeave={() => setIsClearHovered(false)}
                 style={clearBtn}
                 title="Clear search"
                 aria-label="Clear search input"
@@ -278,10 +289,21 @@ export default function ArchivePage() {
           <button
             type="button"
             onClick={() => {}}
+            onMouseEnter={() => setIsSearchHovered(true)}
+            onMouseLeave={() => setIsSearchHovered(false)}
             style={searchBtn}
             aria-label="Search"
           >
-            Search
+            <span>Search</span>
+            <span
+              style={{
+                display: "inline-block",
+                transition: "transform 0.2s ease",
+                transform: isSearchHovered ? "translateX(3px)" : "translateX(0)",
+              }}
+            >
+              →
+            </span>
           </button>
         </div>
 
