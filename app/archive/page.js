@@ -20,30 +20,22 @@ export default function ArchivePage() {
       return false;
     }
 
-    // 2. Search filter
+    // 2. Search filter (title only, per requirement)
     if (!normalizedQuery) {
       return true;
     }
 
-    const corpus = [
+    const titleCorpus = [
       entry.title,
       entry.name,
       entry.khmerTitle,
       entry.nameKhmer,
-      entry.era,
-      entry.location,
-      entry.year,
-      entry.tag,
-      entry.description,
-      entry.story,
-      entry.contributor,
-      ...(entry.places || []),
     ]
       .filter(Boolean)
       .join(" ")
       .toLowerCase();
 
-    return corpus.includes(normalizedQuery);
+    return titleCorpus.includes(normalizedQuery);
   });
 
   const handleInputChange = (e) => {
@@ -191,34 +183,66 @@ export default function ArchivePage() {
   };
 
   const emptyStateWrap = {
-    padding: "72px 32px",
+    padding: "64px 32px",
     textAlign: "center",
     backgroundColor: "#F7F5F0",
-    border: "1px dashed #D0C9BF",
-    margin: "24px 0",
+    border: "1px solid #E5E0D8",
+    borderRadius: 4,
+    margin: "32px 0",
   };
 
   const emptyIcon = {
-    fontFamily: "'Cormorant Garamond', serif",
-    fontSize: 48,
-    color: "#C9A96E",
+    fontSize: 40,
     marginBottom: 16,
+    display: "inline-block",
   };
 
   const emptyTitle = {
     fontFamily: "'Cormorant Garamond', serif",
-    fontSize: 32,
+    fontSize: "clamp(26px, 3.5vw, 34px)",
     fontWeight: 700,
     color: "#1A1A1A",
-    marginBottom: 10,
+    marginBottom: 12,
   };
 
   const emptyDesc = {
     fontSize: 14,
-    color: "#6A6A6A",
-    maxWidth: 480,
-    margin: "0 auto 24px",
-    lineHeight: 1.7,
+    color: "#5A5A5A",
+    maxWidth: 520,
+    margin: "0 auto 20px",
+    lineHeight: 1.8,
+  };
+
+  const suggestionBox = {
+    marginTop: 16,
+    marginBottom: 28,
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 8,
+  };
+
+  const suggestionLabel = {
+    fontFamily: "'Inter', sans-serif",
+    fontSize: 11,
+    fontWeight: 600,
+    letterSpacing: "0.1em",
+    textTransform: "uppercase",
+    color: "#8A8A8A",
+    marginRight: 4,
+  };
+
+  const suggestionChip = {
+    fontFamily: "'Inter', sans-serif",
+    fontSize: 12,
+    color: "#1A1A1A",
+    backgroundColor: "#EAE5DB",
+    border: "1px solid #D0C9BF",
+    padding: "5px 14px",
+    borderRadius: 14,
+    cursor: "pointer",
+    transition: "all 0.2s ease",
   };
 
   return (
@@ -235,7 +259,7 @@ export default function ArchivePage() {
               value={searchQuery}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
-              placeholder="Search by landmark, architect, era, keyword, or Khmer (e.g. Angkor, Molyvann, វិមានឯករាជ្យ)..."
+              placeholder="Search by title (e.g. Angkor Wat, Bayon, Olympic Stadium, វិមានឯករាជ្យ)..."
               style={searchInput}
               aria-label="Search architecture archive"
             />
@@ -310,24 +334,50 @@ export default function ArchivePage() {
           </div>
         )}
 
-        {/* ── Decent Empty State ── */}
+        {/* ── Friendly Empty State ── */}
         {filtered.length === 0 && (
           <div style={emptyStateWrap}>
-            <div style={emptyIcon}>⌕</div>
-            <h2 style={emptyTitle}>No Entries Found</h2>
+            <div style={emptyIcon} role="img" aria-label="Khmer temple icon">
+              🏛️
+            </div>
+            <h2 style={emptyTitle}>No matching titles found, but don&apos;t worry!</h2>
             <p style={emptyDesc}>
-              We couldn&apos;t find any architectural archive entries matching &ldquo;<strong>{searchQuery}</strong>&rdquo;
-              {activeEra !== "All" ? ` in the ${activeEra} era.` : "."}
-              <br />
-              Try searching with another keyword, an architect&apos;s name, or Khmer script.
+              {searchQuery ? (
+                <>
+                  We looked through our Cambodian architectural records for &ldquo;<strong>{searchQuery}</strong>&rdquo;{activeEra !== "All" ? ` in the ${activeEra} era` : ""}, but couldn&apos;t find an exact title match.
+                  <br />
+                  Cambodia&apos;s architectural legacy spans over a millennium — try one of our popular landmarks below or search in Khmer script!
+                </>
+              ) : (
+                <>
+                  There are currently no architectural landmarks cataloged in the <strong>{activeEra}</strong> era.
+                  <br />
+                  Select another era above or click below to explore the entire archive.
+                </>
+              )}
             </p>
+
+            <div style={suggestionBox}>
+              <span style={suggestionLabel}>Try searching:</span>
+              {["Angkor Wat", "Bayon", "Silver Pagoda", "Olympic Stadium", "RUFA"].map((titleSuggestion) => (
+                <button
+                  key={titleSuggestion}
+                  type="button"
+                  onClick={() => setSearchQuery(titleSuggestion)}
+                  style={suggestionChip}
+                >
+                  {titleSuggestion}
+                </button>
+              ))}
+            </div>
+
             <button
               type="button"
               onClick={handleResetAll}
               className="btn-primary"
               style={{ cursor: "pointer" }}
             >
-              Clear Search &amp; Show All
+              Browse All Architectural Titles →
             </button>
           </div>
         )}
