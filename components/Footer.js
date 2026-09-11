@@ -12,7 +12,6 @@ export default function Footer() {
     { label: t("navArchive"), href: "/archive" },
     { label: t("navTimeline"), href: "/timeline" },
     { label: t("navMap"), href: "/map" },
-    { label: t("navAbout"), href: "/about" },
   ];
 
   const colHead = {

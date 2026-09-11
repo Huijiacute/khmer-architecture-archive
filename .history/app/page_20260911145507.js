@@ -192,6 +192,7 @@ export default function HomePage() {
       <Hero />
       <FeaturedEntrySection />
       <RufaEntrySection />
+      <AboutStrip />
       <Mission />
       <FeaturedGrid />
     </>
