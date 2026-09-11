@@ -1,123 +1,74 @@
+"use client";
+
 import Link from "next/link";
 import collection from "../collection.config.js";
-
-const navLinks = [
-  { label: "Main", href: "/" },
-  { label: "Archive", href: "/archive" },
-  { label: "Timeline", href: "/timeline" },
-  { label: "Map", href: "/map" },
-  { label: "About", href: "/about" },
-];
+import { useLanguage } from "./LanguageContext.js";
 
 export default function Footer() {
-  const wrap = {
-    backgroundColor: "#1C1C1C",
-    color: "#FAFAF8",
-    paddingTop: 64,
-    paddingBottom: 32,
-    marginTop: 100,
-  };
+  const { t, isKhmer } = useLanguage();
 
-  const inner = {
-    maxWidth: 1200,
-    margin: "0 auto",
-    padding: "0 40px",
-  };
-
-  const grid = {
-    display: "grid",
-    gridTemplateColumns: "2fr 1fr 1fr",
-    gap: 48,
-    paddingBottom: 48,
-    borderBottom: "1px solid #333",
-  };
+  const navLinks = [
+    { label: t("navMain"), href: "/" },
+    { label: t("navArchive"), href: "/archive" },
+    { label: t("navTimeline"), href: "/timeline" },
+    { label: t("navMap"), href: "/map" },
+    { label: t("navAbout"), href: "/about" },
+  ];
 
   const colHead = {
-    fontFamily: "'Inter', sans-serif",
+    fontFamily: "'Inter', 'Kantumruy Pro', sans-serif",
     fontSize: 11,
-    fontWeight: 500,
+    fontWeight: 600,
     letterSpacing: "0.16em",
     textTransform: "uppercase",
     color: "#C9A96E",
-    marginBottom: 20,
+    marginBottom: 18,
   };
 
-  const archiveName = {
-    fontFamily: "'Cormorant Garamond', serif",
-    fontSize: 22,
-    fontWeight: 600,
-    color: "#FAFAF8",
-    marginBottom: 10,
-  };
-
-  const desc = {
-    fontSize: 13,
-    color: "#888",
-    lineHeight: 1.7,
-    maxWidth: 280,
-  };
-
-  const footLink = {
-    display: "block",
-    fontSize: 13,
-    color: "#888",
-    marginBottom: 10,
-    transition: "color 0.2s",
-    textDecoration: "none",
-  };
-
-  const credit = {
-    fontSize: 13,
-    color: "#888",
-    lineHeight: 1.8,
-  };
-
-  const copy = {
-    marginTop: 28,
-    fontSize: 12,
-    color: "#555",
-    textAlign: "center",
-  };
+  const credit = { fontSize: 13, color: "#888", lineHeight: 1.8 };
 
   return (
-    <footer style={wrap}>
-      <div style={inner}>
-        <div style={grid}>
-          {/* Col 1 — branding */}
+    <footer style={{ backgroundColor: "#1C1C1C", color: "#FAFAF8", paddingTop: 64, paddingBottom: 36, marginTop: 80 }}>
+      <div className="container">
+        <div className="footer-grid" style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: 40, paddingBottom: 40, borderBottom: "1px solid #333" }}>
           <div>
-            <p style={archiveName}>{collection.name}</p>
-            <p style={desc}>{collection.description}</p>
+            <p style={{ fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif", fontSize: 22, fontWeight: 700, color: "#FAFAF8", marginBottom: 10 }}>
+              {isKhmer ? "បណ្ណសារស្ថាបត្យកម្មខ្មែរ" : collection.name}
+            </p>
+            <p style={{ fontSize: 13, color: "#999", lineHeight: 1.8, maxWidth: 360 }}>
+              {isKhmer ? "បណ្ណសារស្ថាបត្យកម្មនៃស្ថាបត្យករខ្មែរដ៏ល្បីល្បាញ លោក វណ្ណ ម៉ូលីវណ្ណ និងបេតិកភណ្ឌកម្ពុជា។" : collection.description}
+            </p>
           </div>
 
-          {/* Col 2 — navigation */}
           <div>
-            <p style={colHead}>Navigation</p>
+            <p style={colHead}>{t("footerNavigation")}</p>
             {navLinks.map((l) => (
-              <Link key={l.href} href={l.href} style={footLink}>
+              <Link key={l.href} href={l.href} style={{ display: "block", fontSize: 13, color: "#888", marginBottom: 10, textDecoration: "none" }}>
                 {l.label}
               </Link>
             ))}
           </div>
 
-          {/* Col 3 — credits */}
           <div>
-            <p style={colHead}>Credits</p>
+            <p style={colHead}>{t("footerCredits")}</p>
             <p style={credit}>
-              Curated by<br />
+              {t("curatedBy")}<br />
               <strong style={{ color: "#FAFAF8" }}>{collection.curator}</strong>
             </p>
-            <p style={{ ...credit, marginTop: 16 }}>
-              Source<br />
+            <p style={{ ...credit, marginTop: 14 }}>
+              {t("source")}<br />
               <strong style={{ color: "#FAFAF8" }}>{collection.source}</strong>
             </p>
-            <p style={{ ...credit, marginTop: 16 }}>
-              ICT 340 — Vibe Coding<br />
-              <span>AUPP, Fall 2026</span>
+            <p style={{ ...credit, marginTop: 14 }}>
+              {t("footerCourse")}<br />
+              <span>{t("footerUniversity")}</span>
             </p>
           </div>
         </div>
 
-        <p style={copy}>© 2026 {collection.name}. Built at AUPP.</p>
+        <p style={{ marginTop: 24, fontSize: 12, color: "#666", textAlign: "center" }}>
+          © 2026 {collection.name}. {t("footerCopyright")}
+        </p>
       </div>
     </footer>
   );

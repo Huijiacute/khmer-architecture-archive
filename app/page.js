@@ -1,202 +1,149 @@
+"use client";
+
 import Link from "next/link";
 import collection from "../collection.config.js";
 import landmarks from "../lib/landmarks.js";
 import EntryCard from "../components/EntryCard.js";
 import SmallEntryCard from "../components/SmallEntryCard.js";
+import { useLanguage } from "../components/LanguageContext.js";
 
 /* ── Hero section ─────────────────────────────────────── */
 function Hero() {
-  const section = {
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr",
-    minHeight: "calc(100vh - 64px)",
-    alignItems: "stretch",
-  };
-
-  const textSide = {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    padding: "80px 60px 80px 40px",
-    maxWidth: 600,
-    margin: "0 auto 0 auto",
-  };
-
-  const label = {
-    fontFamily: "'Inter', sans-serif",
-    fontSize: 11,
-    fontWeight: 500,
-    letterSpacing: "0.18em",
-    textTransform: "uppercase",
-    color: "#C9A96E",
-    marginBottom: 24,
-  };
-
-  const lightWord = {
-    fontFamily: "'Cormorant Garamond', serif",
-    fontSize: "clamp(52px, 6vw, 88px)",
-    fontWeight: 300,
-    color: "#9A9A9A",
-    lineHeight: 1.0,
-    display: "block",
-  };
-
-  const boldWord = {
-    fontFamily: "'Cormorant Garamond', serif",
-    fontSize: "clamp(52px, 6vw, 88px)",
-    fontWeight: 700,
-    color: "#1A1A1A",
-    lineHeight: 1.0,
-    display: "block",
-    marginBottom: 32,
-  };
-
-  const subtitle = {
-    fontFamily: "'Inter', sans-serif",
-    fontSize: 15,
-    color: "#6A6A6A",
-    lineHeight: 1.8,
-    marginBottom: 40,
-    maxWidth: 380,
-  };
-
-  const imgSide = {
-    position: "relative",
-    overflow: "hidden",
-  };
-
-  const img = {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-  };
-
-  const counter = {
-    display: "flex",
-    alignItems: "center",
-    gap: 16,
-    marginTop: 48,
-  };
-
-  const numStyle = {
-    fontFamily: "'Cormorant Garamond', serif",
-    fontSize: 13,
-    color: "#9A9A9A",
-  };
-
-  const divider = { width: 40, height: 1, background: "#D0C9BF" };
+  const { t, isKhmer } = useLanguage();
 
   return (
-    <section style={section}>
-      <div style={textSide}>
-        <p style={label}>Khmer Living Archive</p>
-        <span style={lightWord}>KHMER</span>
-        <span style={boldWord}>Architecture</span>
-        <p style={subtitle}>{collection.description}</p>
-        <Link href="/archive" className="btn-primary">
-          Explore Archive →
-        </Link>
-        <div style={counter}>
-          <span style={numStyle}>01</span>
-          <div style={divider} />
-          <span style={numStyle}>{landmarks.length.toString().padStart(2, "0")}</span>
+    <section className="hero-section">
+      <div className="hero-text-side">
+        <p className="section-label">{t("heroTag")}</p>
+        <h1 style={{ lineHeight: 1.05, marginBottom: 24 }}>
+          <span style={{ fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif", fontSize: "clamp(42px, 5.5vw, 84px)", fontWeight: 300, color: "#9A9A9A", display: "block" }}>
+            {t("heroTitleLight")}
+          </span>
+          <span style={{ fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif", fontSize: "clamp(42px, 5.5vw, 84px)", fontWeight: 700, color: "#1A1A1A", display: "block" }}>
+            {t("heroTitleBold")}
+          </span>
+        </h1>
+
+        {/* Inverted Subtitle Rule: English when Khmer, Khmer when English */}
+        <p style={{ fontFamily: "'Inter', 'Kantumruy Pro', sans-serif", fontSize: 15, color: "#6A6A6A", lineHeight: 1.8, marginBottom: 36, maxWidth: 420 }}>
+          {t("heroSubtitle")}
+        </p>
+
+        <div>
+          <Link href="/archive" className="btn-primary">
+            {t("exploreArchive")}
+          </Link>
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 16, marginTop: 40 }}>
+          <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, color: "#9A9A9A" }}>01</span>
+          <div style={{ width: 40, height: 1, background: "#D0C9BF" }} />
+          <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, color: "#9A9A9A" }}>
+            {landmarks.length.toString().padStart(2, "0")}
+          </span>
         </div>
       </div>
-      <div style={imgSide}>
+
+      <div className="hero-img-side" style={{ minHeight: "360px", position: "relative", overflow: "hidden" }}>
         <img
           src="/angkor_hero.jpg"
           alt="Angkor Wat at golden hour"
-          style={img}
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
         />
       </div>
     </section>
   );
 }
 
-/* ── About strip ─────────────────────────────────────────── */
-function AboutStrip() {
-  const section = {
-    padding: "100px 40px",
-    maxWidth: 1200,
-    margin: "0 auto",
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr",
-    gap: 80,
-    alignItems: "center",
-  };
+/* ── Featured Entry Card Section ─────────────────────────── */
+function FeaturedEntrySection() {
+  const { t, isKhmer } = useLanguage();
 
-  const imageGrid = {
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr",
-    gridTemplateRows: "1fr 1fr",
-    gap: 8,
-    height: 380,
-  };
+  const descEn =
+    "Khmer Architecture Archive is a collection of a prominent Khmer Architect Vann Molyvann (1926–2017) located in Phnom Penh City. This collection explores his visionary 'New Khmer Architecture' movement, which uniquely blended modernist design with traditional Khmer aesthetics to create iconic structures like the Royal University of Fine Arts.";
 
-  const imgStyle = (span) => ({
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    gridRow: span || "auto",
-  });
+  const descKm =
+    "បណ្ណសារស្ថាបត្យកម្មខ្មែរ គឺជាបណ្តុំចងក្រងស្នាដៃរបស់ស្ថាបត្យករខ្មែរដ៏ឆ្នើម លោក វណ្ណ ម៉ូលីវណ្ណ (១៩២៦–២០១៧) នៅរាជធានីភ្នំពេញ។ ការប្រមូលចងក្រងនេះបង្ហាញពីចលនា 'ស្ថាបត្យកម្មខ្មែរថ្មី' ដ៏មានចក្ខុវិស័យ ដែលបានរួមបញ្ចូលគ្នាយ៉ាងល្អឯកនូវការរចនាបែបទំនើបនិយមជាមួយសោភ័ណភាពប្រពៃណីខ្មែរ។";
 
-  const aboutLabel = {
-    fontFamily: "'Inter', sans-serif",
-    fontSize: 11,
-    fontWeight: 500,
-    letterSpacing: "0.18em",
-    textTransform: "uppercase",
-    color: "#C9A96E",
-    marginBottom: 16,
-  };
+  const storyEn =
+    "During the Sangkum Reastr Niyum era (1953–1970), King Norodom Sihanouk appointed Paris-trained architect Vann Molyvann as State Architect to spearhead Cambodia's modernization. Molyvann pioneered 'New Khmer Architecture'—an extraordinary fusion of concrete modernism with ancient Angkorian wisdom.";
 
-  const heading = {
-    fontFamily: "'Cormorant Garamond', serif",
-    fontSize: 52,
-    fontWeight: 700,
-    color: "#1A1A1A",
-    marginBottom: 24,
-    lineHeight: 1.05,
-  };
+  const storyKm =
+    "ក្នុងសម័យសង្គមរាស្ត្រនិយម (១៩៥៣–១៩៧០) ព្រះបាទនរោត្តម សីហនុ បានតែងតាំងស្ថាបត្យករ វណ្ណ ម៉ូលីវណ្ណ ជាស្ថាបត្យកររដ្ឋដឹកនាំការធ្វើទំនើបកម្មប្រទេសកម្ពុជា។ លោកបានត្រួសត្រាយផ្លូវ 'ស្ថាបត្យកម្មខ្មែរថ្មី' ដែលជាការរួមបញ្ចូលគ្នារវាងបេតុងទំនើបនិយម និងចំណេះដឹងបុរាណនៃសម័យអង្គរ។";
 
-  const body = {
-    fontSize: 15,
-    color: "#6A6A6A",
-    lineHeight: 1.85,
-    marginBottom: 32,
-  };
+  const placesEn = ["RUFA", "Chaktomuk Conference Hall", "Independence Monument", "Institute of Foreign Languages (IFL)"];
+  const placesKm = ["សាកលវិទ្យាល័យភូមិន្ទវិចិត្រសិល្បៈ", "សាលសន្និបាតចតុមុខ", "វិមានឯករាជ្យ", "វិទ្យាស្ថានភាសាបរទេស"];
 
   return (
-    <section style={section}>
-      <div style={imageGrid}>
+    <section className="container" style={{ padding: "40px 20px 20px" }}>
+      <EntryCard
+        title={isKhmer ? "បណ្ណសារស្ថាបត្យកម្មខ្មែរ" : collection.name}
+        titleEn={collection.name}
+        titleKm="បណ្ណសារស្ថាបត្យកម្មខ្មែរ"
+        khmerTitle="បណ្ណសារស្ថាបត្យកម្មខ្មែរ"
+        tag={t("featuredEntryTag")}
+        tagKm={t("featuredEntryTag")}
+        description={isKhmer ? descKm : descEn}
+        descriptionEn={descEn}
+        descriptionKm={descKm}
+        story={isKhmer ? storyKm : storyEn}
+        storyEn={storyEn}
+        storyKm={storyKm}
+        contributor="RUFA, Chaktomuk, Independence Monument, IFL"
+        contributorKm="សាកលវិទ្យាល័យភូមិន្ទវិចិត្រសិល្បៈ, ចតុមុខ, វិមានឯករាជ្យ, IFL"
+        places={isKhmer ? placesKm : placesEn}
+        placesEn={placesEn}
+        placesKm={placesKm}
+        actionHref="/archive"
+        actionText={t("browseArchiveBtn")}
+      />
+    </section>
+  );
+}
+
+/* ── RUFA Small Entry Card Section ─────────────────────────── */
+function RufaEntrySection() {
+  return (
+    <section className="container" style={{ padding: "20px 20px 60px" }}>
+      <SmallEntryCard />
+    </section>
+  );
+}
+
+/* ── About strip ─────────────────────────────────────────── */
+function AboutStrip() {
+  const { t } = useLanguage();
+
+  return (
+    <section className="container about-strip-grid" style={{ padding: "80px 20px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, alignItems: "center" }}>
+      <div className="about-img-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gridTemplateRows: "1fr 1fr", gap: 8, height: 360 }}>
         <img
           src="https://images.unsplash.com/photo-1588598198321-9735fd0f2f8f?w=600&q=80"
           alt="Angkor Wat"
-          style={{ ...imgStyle("1 / 3"), gridColumn: "1" }}
+          style={{ width: "100%", height: "100%", objectFit: "cover", gridRow: "1 / 3", gridColumn: "1" }}
         />
         <img
           src="https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=600&q=80"
           alt="Bayon"
-          style={imgStyle()}
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
         <img
           src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80"
           alt="Independence Monument"
-          style={imgStyle()}
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
       </div>
       <div>
-        <p style={aboutLabel}>About</p>
-        <h2 style={heading}>Preserving a<br />Living Legacy</h2>
+        <p className="section-label">{t("aboutTag")}</p>
+        <h2 style={{ fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif", fontSize: "clamp(32px, 4vw, 48px)", fontWeight: 700, color: "#1A1A1A", marginBottom: 20, lineHeight: 1.15, whiteSpace: "pre-line" }}>
+          {t("aboutHeading")}
+        </h2>
         <div style={{ width: 48, height: 2, background: "#C9A96E", marginBottom: 24 }} />
-        <p style={body}>
-          This archive documents the architectural heritage of Cambodia — from the
-          sandstone temples of Angkor to the New Khmer modernism of Vann Molyvann.
-          Each structure tells a story of culture, faith, and identity across more than
-          a thousand years.
+        <p style={{ fontSize: 15, color: "#6A6A6A", lineHeight: 1.85, marginBottom: 28 }}>
+          {t("aboutBody")}
         </p>
         <Link href="/about" className="btn-primary">
-          Read More →
+          {t("readMore")}
         </Link>
       </div>
     </section>
@@ -205,86 +152,32 @@ function AboutStrip() {
 
 /* ── Mission pillars ─────────────────────────────────────── */
 function Mission() {
-  const section = {
-    backgroundColor: "#F3EFE9",
-    padding: "100px 40px",
-  };
+  const { t } = useLanguage();
 
-  const inner = {
-    maxWidth: 1200,
-    margin: "0 auto",
-  };
-
-  const heading = {
-    fontFamily: "'Cormorant Garamond', serif",
-    fontSize: "clamp(32px, 4vw, 52px)",
-    fontWeight: 300,
-    color: "#1A1A1A",
-    marginBottom: 60,
-  };
-
-  const grid = {
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr",
-    gap: 60,
-  };
-
-  const pillar = (num) => ({
-    display: "flex",
-    gap: 24,
-  });
-
-  const bigNum = {
-    fontFamily: "'Cormorant Garamond', serif",
-    fontSize: 80,
-    fontWeight: 300,
-    color: "#D9D2C7",
-    lineHeight: 1,
-    flexShrink: 0,
-    width: 60,
-  };
-
-  const pillarBody = {
-    paddingTop: 8,
-  };
-
-  const pillarTitle = {
-    fontFamily: "'Inter', sans-serif",
-    fontSize: 13,
-    fontWeight: 600,
-    letterSpacing: "0.08em",
-    textTransform: "uppercase",
-    marginBottom: 12,
-  };
-
-  const pillarText = {
-    fontSize: 14,
-    color: "#6A6A6A",
-    lineHeight: 1.8,
-  };
+  const pillars = [
+    { n: "1", title: t("missionDocTitle"), text: t("missionDocText") },
+    { n: "2", title: t("missionPresTitle"), text: t("missionPresText") },
+  ];
 
   return (
-    <section style={section}>
-      <div style={inner}>
-        <h2 style={heading}>Main Focus / Mission Statement</h2>
-        <div style={grid}>
-          {[
-            {
-              n: "1",
-              title: "Documentation",
-              text: "Systematically record every surviving Khmer structure — its dimensions, materials, condition, and historical context — before time erases them.",
-            },
-            {
-              n: "2",
-              title: "Preservation",
-              text: "Advocate for heritage protection policy, fund restoration research, and raise public awareness of Cambodia's irreplaceable architectural wealth.",
-            },
-          ].map((p) => (
-            <div key={p.n} style={pillar(p.n)}>
-              <span style={bigNum}>{p.n}</span>
-              <div style={pillarBody}>
-                <p style={pillarTitle}>{p.title}</p>
-                <p style={pillarText}>{p.text}</p>
+    <section style={{ backgroundColor: "#F3EFE9", padding: "80px 20px" }}>
+      <div className="container">
+        <h2 style={{ fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif", fontSize: "clamp(28px, 3.5vw, 44px)", fontWeight: 300, color: "#1A1A1A", marginBottom: 48 }}>
+          {t("missionHeading")}
+        </h2>
+        <div className="mission-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48 }}>
+          {pillars.map((p) => (
+            <div key={p.n} style={{ display: "flex", gap: 20 }}>
+              <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(54px, 6vw, 76px)", fontWeight: 300, color: "#D9D2C7", lineHeight: 1, width: 50, flexShrink: 0 }}>
+                {p.n}
+              </span>
+              <div>
+                <p style={{ fontFamily: "'Inter', 'Kantumruy Pro', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 10 }}>
+                  {p.title}
+                </p>
+                <p style={{ fontSize: 14, color: "#6A6A6A", lineHeight: 1.8 }}>
+                  {p.text}
+                </p>
               </div>
             </div>
           ))}
@@ -296,161 +189,38 @@ function Mission() {
 
 /* ── Featured landmarks grid ─────────────────────────────── */
 function FeaturedGrid() {
-  const section = {
-    padding: "100px 40px",
-    maxWidth: 1200,
-    margin: "0 auto",
-  };
-
-  const heading = {
-    fontFamily: "'Cormorant Garamond', serif",
-    fontSize: "clamp(32px, 4vw, 52px)",
-    fontWeight: 300,
-    color: "#1A1A1A",
-    marginBottom: 40,
-  };
-
-  const grid = {
-    display: "grid",
-    gridTemplateColumns: "repeat(3, 1fr)",
-    gridTemplateRows: "280px 200px",
-    gap: 8,
-  };
-
-  const bigCard = {
-    gridColumn: "1 / 3",
-    gridRow: "1 / 3",
-    position: "relative",
-    overflow: "hidden",
-    backgroundColor: "#1A1A1A",
-  };
-
-  const bigImg = {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    opacity: 0.7,
-  };
-
-  const bigOverlay = {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    padding: "32px",
-    color: "#FAFAF8",
-  };
-
-  const bigName = {
-    fontFamily: "'Cormorant Garamond', serif",
-    fontSize: 36,
-    fontWeight: 700,
-    lineHeight: 1.1,
-    marginBottom: 6,
-  };
-
-  const bigEra = {
-    fontFamily: "'Inter', sans-serif",
-    fontSize: 11,
-    letterSpacing: "0.14em",
-    textTransform: "uppercase",
-    color: "#C9A96E",
-  };
-
-  const smallCard = {
-    position: "relative",
-    overflow: "hidden",
-  };
-
-  const smallImg = {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-  };
-
+  const { t, isKhmer } = useLanguage();
   const featured = landmarks.slice(0, 5);
 
-  const cta = {
-    display: "flex",
-    justifyContent: "flex-end",
-    marginTop: 32,
-  };
-
   return (
-    <section style={section}>
-      <h2 style={heading}>Our Archive</h2>
-      <div style={grid}>
-        {/* Big card */}
-        <div style={bigCard}>
-          <img src={featured[0].imageUrl} alt={featured[0].name} style={bigImg} />
-          <div style={bigOverlay}>
-            <p style={bigName}>{featured[0].name}</p>
-            <p style={bigEra}>{featured[0].nameKhmer} — {featured[0].era}</p>
+    <section className="container" style={{ padding: "80px 20px" }}>
+      <h2 style={{ fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif", fontSize: "clamp(28px, 3.5vw, 44px)", fontWeight: 300, color: "#1A1A1A", marginBottom: 36 }}>
+        {t("ourArchiveHeading")}
+      </h2>
+      <div className="featured-grid-wrap" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gridTemplateRows: "260px 180px", gap: 8 }}>
+        <div className="featured-big-card" style={{ gridColumn: "1 / 3", gridRow: "1 / 3", position: "relative", overflow: "hidden", backgroundColor: "#1A1A1A" }}>
+          <img src={featured[0].imageUrl} alt={featured[0].name} style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.7 }} />
+          <div style={{ position: "absolute", bottom: 0, left: 0, padding: "clamp(20px, 4vw, 32px)", color: "#FAFAF8" }}>
+            <p style={{ fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif", fontSize: "clamp(24px, 3vw, 34px)", fontWeight: 700, lineHeight: 1.15, marginBottom: 6 }}>
+              {isKhmer ? (featured[0].nameKhmer || featured[0].name) : featured[0].name}
+            </p>
+            <p style={{ fontFamily: "'Inter', 'Kantumruy Pro', sans-serif", fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", color: "#C9A96E" }}>
+              {isKhmer ? featured[0].name : featured[0].nameKhmer} — {isKhmer ? (featured[0].eraKm || featured[0].era) : featured[0].era}
+            </p>
           </div>
         </div>
-        {/* Small cards */}
+
         {featured.slice(1).map((lm) => (
-          <div key={lm.id} style={smallCard}>
-            <img src={lm.imageUrl} alt={lm.name} style={smallImg} />
+          <div key={lm.id} style={{ position: "relative", overflow: "hidden" }}>
+            <img src={lm.imageUrl} alt={lm.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
         ))}
       </div>
-      <div style={cta}>
-        <Link href="/archive" className="btn-primary">All Archive →</Link>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 28 }}>
+        <Link href="/archive" className="btn-primary">
+          {t("allArchiveBtn")}
+        </Link>
       </div>
-    </section>
-  );
-}
-
-/* ── Featured Entry Card Section ─────────────────────────── */
-function FeaturedEntrySection() {
-  const section = {
-    padding: "60px 40px 20px",
-    maxWidth: 1200,
-    margin: "0 auto",
-  };
-
-  const description =
-    "Khmer Architecture Archive is a collection of a prominent Khmer Architect Vann Molyvann (1926–2017) located in Phnom Penh City. This collection explores his visionary \"New Khmer Architecture\" movement, which uniquely blended modernist design with traditional Khmer aesthetics to create iconic structures like the Royal University of Fine Arts. The archive serves as a vital resource for understanding how Molyvann defined the modern identity of Cambodia through his sustainable and culturally rich masterpieces.";
-
-  const story =
-    "During the Sangkum Reastr Niyum era (1953–1970), King Norodom Sihanouk appointed Paris-trained architect Vann Molyvann as State Architect to spearhead Cambodia's modernization. Molyvann pioneered 'New Khmer Architecture' (ស្ថាបត្យកម្មប្រពៃណីខ្មែរបែបទំនើប)—an extraordinary fusion of Bauhaus and Corbusian concrete modernism with ancient Angkorian wisdom. He integrated passive climate conditioning: elevated pilings against tropical floods, double roofs for heat dispersion, and intricate brise-soleil lattice screens for natural air cross-ventilation, forever reshaping Cambodia's modern urban landscape.";
-
-  const places = [
-    "RUFA (Royal University of Fine Arts)",
-    "Chaktomuk Conference Hall",
-    "Independence Monument",
-    "Institute of Foreign Languages (IFL)",
-    "Brown Coffee",
-  ];
-
-  return (
-    <section style={section}>
-      <EntryCard
-        title={collection.name}
-        khmerTitle="បណ្ណសារស្ថាបត្យកម្មខ្មែរ"
-        tag="Featured Heritage Entry"
-        description={description}
-        story={story}
-        contributor="RUFA, Chaktomuk Conference Hall, Independence Monument, Brown Coffee, Institute of Foreign Language"
-        places={places}
-        actionHref="/archive"
-        actionText="Browse Architecture Archive →"
-      />
-    </section>
-  );
-}
-
-/* ── RUFA Small Entry Card Section ─────────────────────────── */
-function RufaEntrySection() {
-  const section = {
-    padding: "20px 40px 60px",
-    maxWidth: 1200,
-    margin: "0 auto",
-  };
-
-  return (
-    <section style={section}>
-      <SmallEntryCard />
     </section>
   );
 }
@@ -468,4 +238,3 @@ export default function HomePage() {
     </>
   );
 }
-

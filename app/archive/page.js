@@ -1,43 +1,58 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import entries from "../../data/entries.js";
 import EntryCard from "../../components/EntryCard.js";
-
-const eras = ["All", "Pre-Angkorian", "Angkorian", "Post-Angkorian", "New Khmer", "Contemporary"];
+import { useLanguage } from "../../components/LanguageContext.js";
 
 export default function ArchivePage() {
-  const [activeEra, setActiveEra] = useState("All");
+  const { t, isKhmer } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchHovered, setIsSearchHovered] = useState(false);
   const [isClearHovered, setIsClearHovered] = useState(false);
 
-  /* ── Filter entries by era and search term ── */
+  /* ── Filter entries across all content fields in both Khmer and English ── */
   const normalizedQuery = searchQuery.trim().toLowerCase();
 
   const filtered = entries.filter((entry) => {
-    // 1. Era filter
-    if (activeEra !== "All" && entry.era !== activeEra) {
-      return false;
-    }
-
-    // 2. Search filter (title only, per requirement)
     if (!normalizedQuery) {
       return true;
     }
 
-    const titleCorpus = [
+    const searchableCorpus = [
       entry.title,
+      entry.titleEn,
+      entry.titleKm,
       entry.name,
-      entry.khmerTitle,
       entry.nameKhmer,
+      entry.khmerTitle,
+      entry.description,
+      entry.descriptionEn,
+      entry.descriptionKm,
+      entry.story,
+      entry.storyEn,
+      entry.storyKm,
+      entry.location,
+      entry.locationEn,
+      entry.locationKm,
+      entry.era,
+      entry.eraEn,
+      entry.eraKm,
+      entry.year,
+      entry.yearEn,
+      entry.yearKm,
+      entry.contributor,
+      entry.contributorEn,
+      entry.contributorKm,
+      Array.isArray(entry.places) ? entry.places.join(" ") : "",
+      Array.isArray(entry.placesEn) ? entry.placesEn.join(" ") : "",
+      Array.isArray(entry.placesKm) ? entry.placesKm.join(" ") : "",
     ]
       .filter(Boolean)
       .join(" ")
       .toLowerCase();
 
-    return titleCorpus.includes(normalizedQuery);
+    return searchableCorpus.includes(normalizedQuery);
   });
 
   const handleInputChange = (e) => {
@@ -47,7 +62,6 @@ export default function ArchivePage() {
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      // searchQuery is already filtering live as you type
     }
   };
 
@@ -55,222 +69,59 @@ export default function ArchivePage() {
     setSearchQuery("");
   };
 
-  const handleResetAll = () => {
-    setSearchQuery("");
-    setActiveEra("All");
-  };
-
-  /* ── styles ── */
-  const pageHeader = {
-    padding: "80px 40px 40px",
-    maxWidth: 1200,
-    margin: "0 auto",
-    borderBottom: "1px solid #E5E0D8",
-  };
-
-  const lightTitle = {
-    fontFamily: "'Cormorant Garamond', serif",
-    fontSize: "clamp(48px, 7vw, 96px)",
-    fontWeight: 300,
-    color: "#BABAB0",
-    lineHeight: 1.0,
-    display: "block",
-  };
-
-  const boldTitle = {
-    fontFamily: "'Cormorant Garamond', serif",
-    fontSize: "clamp(48px, 7vw, 96px)",
-    fontWeight: 700,
-    color: "#1A1A1A",
-    lineHeight: 1.0,
-    display: "block",
-    marginBottom: 40,
-  };
-
-  const searchControls = {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: 12,
-    alignItems: "center",
-    marginBottom: 32,
-  };
-
-  const searchBox = {
-    display: "flex",
-    alignItems: "center",
-    flex: "1 1 360px",
-    maxWidth: 640,
-    position: "relative",
-    border: "1px solid #D0C9BF",
-    backgroundColor: "#FFFFFF",
-    transition: "border-color 0.2s ease",
-  };
-
-  const searchInput = {
-    flex: 1,
-    fontFamily: "'Inter', sans-serif",
-    fontSize: 14,
-    color: "#1A1A1A",
-    backgroundColor: "transparent",
-    border: "none",
-    padding: "12px 16px",
-    outline: "none",
-  };
-
-  const clearBtn = {
-    fontFamily: "'Inter', sans-serif",
-    fontSize: 12,
-    color: isClearHovered ? "#1A1A1A" : "#8A8A8A",
-    backgroundColor: isClearHovered ? "#EAE5DB" : "transparent",
-    border: "none",
-    padding: "6px 12px",
-    borderRadius: 2,
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    gap: 4,
-    transition: "all 0.2s ease",
-  };
-
-  const searchBtn = {
-    fontFamily: "'Inter', sans-serif",
-    fontSize: 11,
-    fontWeight: 600,
-    letterSpacing: "0.14em",
-    textTransform: "uppercase",
-    backgroundColor: isSearchHovered ? "#C9A96E" : "#1A1A1A",
-    color: "#FAFAF8",
-    border: `1px solid ${isSearchHovered ? "#C9A96E" : "#1A1A1A"}`,
-    padding: "12px 26px",
-    cursor: "pointer",
-    transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 8,
-    transform: isSearchHovered ? "translateY(-1px)" : "translateY(0)",
-    boxShadow: isSearchHovered ? "0 4px 14px rgba(201, 169, 110, 0.35)" : "none",
-  };
-
-  const filterBar = {
-    display: "flex",
-    gap: 6,
-    flexWrap: "wrap",
-  };
-
-  const filterBtn = (era) => ({
-    fontFamily: "'Inter', sans-serif",
-    fontSize: 11,
-    fontWeight: 500,
-    letterSpacing: "0.14em",
-    textTransform: "uppercase",
-    padding: "10px 18px",
-    border: "1px solid",
-    borderColor: activeEra === era ? "#1A1A1A" : "#D0C9BF",
-    backgroundColor: activeEra === era ? "#1A1A1A" : "transparent",
-    color: activeEra === era ? "#FAFAF8" : "#6A6A6A",
-    cursor: "pointer",
-    transition: "all 0.2s ease",
-  });
-
-  const listWrap = {
-    maxWidth: 1200,
-    margin: "0 auto",
-    padding: "48px 40px 80px",
-  };
-
-  const statusStrip = {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    flexWrap: "wrap",
-    gap: 12,
-    marginBottom: 32,
-    paddingBottom: 16,
-    borderBottom: "1px solid #E5E0D8",
-    fontSize: 13,
-    color: "#6A6A6A",
-  };
-
-  const emptyStateWrap = {
-    padding: "64px 32px",
-    textAlign: "center",
-    backgroundColor: "#F7F5F0",
-    border: "1px solid #E5E0D8",
-    borderRadius: 4,
-    margin: "32px 0",
-  };
-
-  const emptyIcon = {
-    fontSize: 40,
-    marginBottom: 16,
-    display: "inline-block",
-  };
-
-  const emptyTitle = {
-    fontFamily: "'Cormorant Garamond', serif",
-    fontSize: "clamp(26px, 3.5vw, 34px)",
-    fontWeight: 700,
-    color: "#1A1A1A",
-    marginBottom: 12,
-  };
-
-  const emptyDesc = {
-    fontSize: 14,
-    color: "#5A5A5A",
-    maxWidth: 520,
-    margin: "0 auto 20px",
-    lineHeight: 1.8,
-  };
-
-  const suggestionBox = {
-    marginTop: 16,
-    marginBottom: 28,
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 8,
-  };
-
-  const suggestionLabel = {
-    fontFamily: "'Inter', sans-serif",
-    fontSize: 11,
-    fontWeight: 600,
-    letterSpacing: "0.1em",
-    textTransform: "uppercase",
-    color: "#8A8A8A",
-    marginRight: 4,
-  };
-
-  const suggestionChip = {
-    fontFamily: "'Inter', sans-serif",
-    fontSize: 12,
-    color: "#1A1A1A",
-    backgroundColor: "#EAE5DB",
-    border: "1px solid #D0C9BF",
-    padding: "5px 14px",
-    borderRadius: 14,
-    cursor: "pointer",
-    transition: "all 0.2s ease",
-  };
+  const suggestions = isKhmer
+    ? ["អង្គរវត្ត", "ប្រាសាទបាយ័ន", "វិមានឯករាជ្យ", "វណ្ណ ម៉ូលីវណ្ណ", "ពហុកីឡដ្ឋានជាតិ"]
+    : ["Angkor Wat", "Bayon", "Olympic Stadium", "Vann Molyvann", "Independence Monument"];
 
   return (
-    <>
-      <div style={pageHeader}>
-        <span style={lightTitle}>Our</span>
-        <span style={boldTitle}>Archive</span>
+    <div style={{ minHeight: "80vh" }}>
+      {/* ── Page Header: Special Inverted Title & Subtitle Rule ── */}
+      <div style={{ padding: "clamp(40px, 6vw, 80px) 20px 40px", maxWidth: 1200, margin: "0 auto", borderBottom: "1px solid #E5E0D8" }}>
+        <h1 style={{ lineHeight: 1.05, marginBottom: 12 }}>
+          <span style={{ fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif", fontSize: "clamp(36px, 6vw, 84px)", fontWeight: 300, color: "#BABAB0", display: "block" }}>
+            {t("archiveTitleLight")}
+          </span>
+          <span style={{ fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif", fontSize: "clamp(36px, 6vw, 84px)", fontWeight: 700, color: "#1A1A1A", display: "block" }}>
+            {t("archiveTitleBold")}
+          </span>
+        </h1>
 
-        {/* ── Search bar with functional search button and clear button ── */}
-        <div style={searchControls}>
-          <div style={searchBox}>
+        {/* Subtitle inverted: English when Khmer, Khmer when English */}
+        <p style={{ fontFamily: "'Inter', 'Kantumruy Pro', sans-serif", fontSize: "clamp(14px, 2vw, 16px)", color: "#7A7A7A", lineHeight: 1.7, marginBottom: 32, maxWidth: 640 }}>
+          {t("archiveSubtitle")}
+        </p>
+
+        {/* ── Search Bar: Only Input, Search Button, and Optional Clear Button ── */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "stretch", width: "100%", maxWidth: 680 }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              flex: "1 1 280px",
+              minHeight: 48,
+              border: "1px solid #D0C9BF",
+              backgroundColor: "#FFFFFF",
+              paddingRight: 6,
+            }}
+          >
             <input
               type="text"
               value={searchQuery}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
-              placeholder="Search by title (e.g. Angkor Wat, Bayon, Olympic Stadium, វិមានឯករាជ្យ)..."
-              style={searchInput}
-              aria-label="Search architecture archive"
+              placeholder={t("searchPlaceholder")}
+              aria-label={t("searchAria")}
+              style={{
+                flex: 1,
+                fontFamily: "'Inter', 'Kantumruy Pro', sans-serif",
+                fontSize: 14,
+                color: "#1A1A1A",
+                backgroundColor: "transparent",
+                border: "none",
+                padding: "12px 16px",
+                outline: "none",
+                width: "100%",
+              }}
             />
             {searchQuery && (
               <button
@@ -278,160 +129,212 @@ export default function ArchivePage() {
                 onClick={handleClear}
                 onMouseEnter={() => setIsClearHovered(true)}
                 onMouseLeave={() => setIsClearHovered(false)}
-                style={clearBtn}
-                title="Clear search"
-                aria-label="Clear search input"
+                style={{
+                  fontFamily: "'Inter', 'Kantumruy Pro', sans-serif",
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: isClearHovered ? "#1A1A1A" : "#8A8A8A",
+                  backgroundColor: isClearHovered ? "#EAE5DB" : "transparent",
+                  border: "none",
+                  padding: "6px 12px",
+                  borderRadius: 2,
+                  cursor: "pointer",
+                  minHeight: 36,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 4,
+                  flexShrink: 0,
+                }}
+                aria-label={t("clearBtn")}
               >
-                ✕ Clear
+                ✕ {t("clearBtn")}
               </button>
             )}
           </div>
+
           <button
             type="button"
             onClick={() => {}}
             onMouseEnter={() => setIsSearchHovered(true)}
             onMouseLeave={() => setIsSearchHovered(false)}
-            style={searchBtn}
-            aria-label="Search"
+            aria-label={t("searchBtn")}
+            style={{
+              fontFamily: "'Inter', 'Kantumruy Pro', sans-serif",
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              backgroundColor: isSearchHovered ? "#C9A96E" : "#1A1A1A",
+              color: "#FAFAF8",
+              border: "none",
+              padding: "14px 28px",
+              minHeight: 48,
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+              flexShrink: 0,
+            }}
           >
-            <span>Search</span>
-            <span
-              style={{
-                display: "inline-block",
-                transition: "transform 0.2s ease",
-                transform: isSearchHovered ? "translateX(3px)" : "translateX(0)",
-              }}
-            >
-              →
-            </span>
+            <span>{t("searchBtn")}</span>
+            <span>→</span>
           </button>
-        </div>
-
-        {/* ── Era filter buttons ── */}
-        <div style={filterBar}>
-          {eras.map((era) => (
-            <button
-              key={era}
-              style={filterBtn(era)}
-              onClick={() => setActiveEra(era)}
-              aria-pressed={activeEra === era}
-            >
-              {era}
-            </button>
-          ))}
         </div>
       </div>
 
-      <div style={listWrap}>
-        {/* ── Search and Filter Status Bar ── */}
-        {(searchQuery || activeEra !== "All") && (
-          <div style={statusStrip}>
-            <div>
-              <span>
-                Showing <strong>{filtered.length}</strong> {filtered.length === 1 ? "entry" : "entries"}
-              </span>
-              {searchQuery && (
-                <span> matching &ldquo;<strong>{searchQuery}</strong>&rdquo;</span>
-              )}
-              {activeEra !== "All" && (
-                <span> in <strong>{activeEra}</strong></span>
-              )}
-            </div>
+      {/* ── Results Container ── */}
+      <div className="container" style={{ paddingTop: 32, paddingBottom: 80 }}>
+        {/* Status indicator */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 12,
+            marginBottom: 32,
+            paddingBottom: 16,
+            borderBottom: "1px solid #E5E0D8",
+            fontSize: 13,
+            color: "#6A6A6A",
+          }}
+        >
+          <div>
+            <span>
+              {t("showing")} <strong>{filtered.length}</strong> {filtered.length === 1 ? t("entrySingular") : t("entryPlural")}
+            </span>
+            {searchQuery && (
+              <span> {t("matching")} &ldquo;<strong>{searchQuery}</strong>&rdquo;</span>
+            )}
+          </div>
+
+          {searchQuery && (
             <button
               type="button"
-              onClick={handleResetAll}
+              onClick={handleClear}
               style={{
                 background: "none",
                 border: "none",
                 color: "#C9A96E",
                 cursor: "pointer",
-                fontFamily: "'Inter', sans-serif",
+                fontFamily: "'Inter', 'Kantumruy Pro', sans-serif",
                 fontSize: 12,
                 fontWeight: 600,
                 textDecoration: "underline",
+                padding: "6px 0",
               }}
             >
-              Reset Filters
+              {t("resetFilters")}
             </button>
-          </div>
-        )}
+          )}
+        </div>
 
-        {/* ── Friendly Empty State ── */}
+        {/* ── Empty State ── */}
         {filtered.length === 0 && (
-          <div style={emptyStateWrap}>
-            <div style={emptyIcon} role="img" aria-label="Khmer temple icon">
+          <div
+            style={{
+              padding: "clamp(36px, 6vw, 64px) 20px",
+              textAlign: "center",
+              backgroundColor: "#F7F5F0",
+              border: "1px solid #E5E0D8",
+              borderRadius: 4,
+              margin: "24px 0 48px",
+            }}
+          >
+            <div style={{ fontSize: 44, marginBottom: 16 }} role="img" aria-label="Cambodian temple icon">
               🏛️
             </div>
-            <h2 style={emptyTitle}>No matching titles found, but don&apos;t worry!</h2>
-            <p style={emptyDesc}>
-              {searchQuery ? (
-                <>
-                  We looked through our Cambodian architectural records for &ldquo;<strong>{searchQuery}</strong>&rdquo;{activeEra !== "All" ? ` in the ${activeEra} era` : ""}, but couldn&apos;t find an exact title match.
-                  <br />
-                  Cambodia&apos;s architectural legacy spans over a millennium — try one of our popular landmarks below or search in Khmer script!
-                </>
-              ) : (
-                <>
-                  There are currently no architectural landmarks cataloged in the <strong>{activeEra}</strong> era.
-                  <br />
-                  Select another era above or click below to explore the entire archive.
-                </>
-              )}
+            <h2 style={{ fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif", fontSize: "clamp(24px, 3.5vw, 32px)", fontWeight: 700, color: "#1A1A1A", marginBottom: 12 }}>
+              {t("emptyTitle")}
+            </h2>
+            <p style={{ fontSize: 14, color: "#5A5A5A", maxWidth: 540, margin: "0 auto 24px", lineHeight: 1.8 }}>
+              {t("emptyDesc").replace("{query}", searchQuery)}
             </p>
 
-            <div style={suggestionBox}>
-              <span style={suggestionLabel}>Try searching:</span>
-              {["Angkor Wat", "Bayon", "Silver Pagoda", "Olympic Stadium", "RUFA"].map((titleSuggestion) => (
+            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", alignItems: "center", gap: 8, marginBottom: 32 }}>
+              <span style={{ fontFamily: "'Inter', 'Kantumruy Pro', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "#8A8A8A" }}>
+                {t("trySearching")}
+              </span>
+              {suggestions.map((s) => (
                 <button
-                  key={titleSuggestion}
+                  key={s}
                   type="button"
-                  onClick={() => setSearchQuery(titleSuggestion)}
-                  style={suggestionChip}
+                  onClick={() => setSearchQuery(s)}
+                  style={{
+                    fontFamily: "'Inter', 'Kantumruy Pro', sans-serif",
+                    fontSize: 12,
+                    color: "#1A1A1A",
+                    backgroundColor: "#EAE5DB",
+                    border: "1px solid #D0C9BF",
+                    padding: "6px 14px",
+                    borderRadius: 16,
+                    cursor: "pointer",
+                    minHeight: 36,
+                  }}
                 >
-                  {titleSuggestion}
+                  {s}
                 </button>
               ))}
             </div>
 
             <button
               type="button"
-              onClick={handleResetAll}
+              onClick={handleClear}
               className="btn-primary"
-              style={{ cursor: "pointer" }}
             >
-              Browse All Architectural Titles →
+              {t("browseAllBtn")}
             </button>
           </div>
         )}
 
-        {/* ── Every entry visible through EntryCard ── */}
-        {filtered.map((entry) => (
-          <EntryCard
-            key={entry.id}
-            title={entry.title || entry.name}
-            khmerTitle={entry.khmerTitle || entry.nameKhmer}
-            tag={`${entry.era} · ${entry.location} · ${entry.year}`}
-            description={entry.description}
-            story={entry.story}
-            contributor={entry.contributor}
-            places={entry.places}
-            imageUrl={entry.imageUrl}
-            actionHref="/timeline"
-            actionText="View in Timeline →"
-          />
-        ))}
+        {/* ── Render List of Entries ── */}
+        <div>
+          {filtered.map((entry) => (
+            <EntryCard
+              key={entry.id}
+              title={entry.title || entry.name}
+              titleEn={entry.titleEn || entry.title}
+              titleKm={entry.titleKm || entry.khmerTitle || entry.nameKhmer}
+              khmerTitle={entry.khmerTitle || entry.nameKhmer}
+              tag={`${entry.eraEn || entry.era} · ${entry.locationEn || entry.location} · ${entry.yearEn || entry.year}`}
+              tagKm={`${entry.eraKm || entry.era} · ${entry.locationKm || entry.location} · ${entry.yearKm || entry.year}`}
+              description={entry.description}
+              descriptionEn={entry.descriptionEn || entry.description}
+              descriptionKm={entry.descriptionKm}
+              story={entry.story}
+              storyEn={entry.storyEn || entry.story}
+              storyKm={entry.storyKm}
+              contributor={entry.contributor}
+              contributorEn={entry.contributorEn || entry.contributor}
+              contributorKm={entry.contributorKm}
+              places={entry.places}
+              placesEn={entry.placesEn || entry.places}
+              placesKm={entry.placesKm}
+              imageUrl={entry.imageUrl}
+              actionHref="/timeline"
+              actionText={t("viewTimelineBtn")}
+            />
+          ))}
+        </div>
 
-        {/* ── Pagination / Count Indicator ── */}
+        {/* ── Result Count & Bottom Status ── */}
         {filtered.length > 0 && (
-          <div style={{ display: "flex", alignItems: "center", gap: 12, paddingTop: 24 }}>
-            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, fontWeight: 700 }}>01</span>
-            <span style={{ color: "#C9A96E" }}>/</span>
-            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 16, color: "#9A9A9A" }}>
-              {String(filtered.length).padStart(2, "0")}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16, paddingTop: 24, borderTop: "1px solid #E5E0D8" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, fontWeight: 700 }}>01</span>
+              <span style={{ color: "#C9A96E" }}>/</span>
+              <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 16, color: "#9A9A9A" }}>
+                {String(filtered.length).padStart(2, "0")}
+              </span>
+            </div>
+            <span style={{ fontSize: 13, color: "#8A8A8A" }}>
+              {t("allEntriesLoaded")}
             </span>
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }
