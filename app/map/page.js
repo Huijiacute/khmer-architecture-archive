@@ -44,7 +44,7 @@ export default function MapPage() {
       {/* Left panel */}
       <div className="map-left-panel" style={{ padding: "clamp(40px, 6vw, 80px) clamp(20px, 4vw, 48px)", maxWidth: 540 }}>
         <p className="section-label">{t("mapGeographicView")}</p>
-        
+
         {/* Special Inverted Title & Subtitle Rule */}
         <h1 style={{ lineHeight: 1.05, marginBottom: 12 }}>
           <span style={{ fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif", fontSize: "clamp(36px, 5.5vw, 68px)", fontWeight: 300, color: "#BABAB0", display: "block" }}>

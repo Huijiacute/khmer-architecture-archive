@@ -1,34 +1,46 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useLanguage } from "./LanguageContext.js";
 import LanguageSwitcher from "./LanguageSwitcher.js";
 
 export default function NavBar() {
-  const pathname = usePathname();
   const { t } = useLanguage();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 20);
+
+      // Determine which section is currently in view
+      const sections = ["home", "archive", "map"];
+      const scrollPos = window.scrollY + 200;
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const el = document.getElementById(sections[i]);
+        if (el && el.offsetTop <= scrollPos) {
+          setActiveSection(sections[i]);
+          break;
+        }
+      }
+    };
+
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close mobile menu on route change
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
-
   const navLinks = [
-    { label: t("navMain"), href: "/" },
-    { label: t("navArchive"), href: "/archive" },
-    { label: t("navTimeline"), href: "/timeline" },
-    { label: t("navMap"), href: "/map" },
+    { id: "home", label: t("navMain"), href: "#home" },
+    { id: "archive", label: t("navArchive"), href: "#archive" },
+    { id: "map", label: t("navMap"), href: "#map" },
   ];
+
+  const handleLinkClick = (id, e) => {
+    setActiveSection(id);
+    setMenuOpen(false);
+  };
 
   return (
     <header
@@ -46,11 +58,12 @@ export default function NavBar() {
         <nav style={{ display: "flex", alignItems: "center", gap: 24 }} aria-label={t("navAria")}>
           <div className="desktop-links" style={{ display: "flex", alignItems: "center", gap: 24 }}>
             {navLinks.map((link) => {
-              const active = pathname === link.href;
+              const active = activeSection === link.id;
               return (
-                <Link
-                  key={link.href}
+                <a
+                  key={link.id}
                   href={link.href}
+                  onClick={(e) => handleLinkClick(link.id, e)}
                   style={{
                     fontFamily: "'Inter', sans-serif",
                     fontSize: 11,
@@ -60,10 +73,13 @@ export default function NavBar() {
                     color: active ? "#1A1A1A" : "#8A8A8A",
                     paddingBottom: 3,
                     borderBottom: active ? "1.5px solid #C9A96E" : "1.5px solid transparent",
+                    textDecoration: "none",
+                    cursor: "pointer",
+                    transition: "color 0.2s ease, border-color 0.2s ease",
                   }}
                 >
                   {link.label}
-                </Link>
+                </a>
               );
             })}
           </div>
@@ -107,9 +123,10 @@ export default function NavBar() {
           }}
         >
           {navLinks.map((link) => (
-            <Link
-              key={link.href}
+            <a
+              key={link.id}
               href={link.href}
+              onClick={(e) => handleLinkClick(link.id, e)}
               style={{
                 fontFamily: "'Inter', sans-serif",
                 fontSize: 13,
@@ -117,11 +134,13 @@ export default function NavBar() {
                 letterSpacing: "0.1em",
                 textTransform: "uppercase",
                 padding: "8px 0",
-                color: pathname === link.href ? "#1A1A1A" : "#6A6A6A",
+                color: activeSection === link.id ? "#1A1A1A" : "#6A6A6A",
+                textDecoration: "none",
+                cursor: "pointer",
               }}
             >
               {link.label}
-            </Link>
+            </a>
           ))}
         </div>
       )}

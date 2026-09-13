@@ -1,7 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import collection from "../collection.config.js";
 import landmarks from "../lib/landmarks.js";
+import EntryCard from "../components/EntryCard.js";
+import SmallEntryCard from "../components/SmallEntryCard.js";
 import ArchiveSection from "../components/ArchiveSection.js";
 import MapSection from "../components/MapSection.js";
 import { useLanguage } from "../components/LanguageContext.js";
@@ -132,6 +135,8 @@ export default function HomePage() {
   return (
     <>
       <Hero />
+      <FeaturedEntrySection />
+      <RufaEntrySection />
       <Mission />
       <ArchiveSection />
       <MapSection />
