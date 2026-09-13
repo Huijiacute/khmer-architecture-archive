@@ -41,11 +41,7 @@ export default function NavBar() {
         transition: "border-color 0.3s ease",
       }}
     >
-      <div className="container" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 64 }}>
-        <Link href="/" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, fontWeight: 700, letterSpacing: "0.02em" }}>
-          KLA
-        </Link>
-
+      <div className="container" style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", height: 64 }}>
         {/* Desktop Nav */}
         <nav style={{ display: "flex", alignItems: "center", gap: 24 }} aria-label={t("navAria")}>
           <div className="desktop-links" style={{ display: "flex", alignItems: "center", gap: 24 }}>

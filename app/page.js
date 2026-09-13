@@ -13,43 +13,77 @@ function Hero() {
 
   return (
     <section className="hero-section">
-      <div className="hero-text-side">
-        <p className="section-label">{t("heroTag")}</p>
-        <h1 style={{ lineHeight: 1.05, marginBottom: 24 }}>
-          <span style={{ fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif", fontSize: "clamp(42px, 5.5vw, 84px)", fontWeight: 300, color: "#9A9A9A", display: "block" }}>
+      <div className="hero-content-center">
+        <p className="section-label animate-slide-up delay-1" style={{ color: "#D4AF37", marginBottom: 18 }}>
+          {t("heroTag")}
+        </p>
+
+        <h1 className="animate-slide-up delay-2" style={{ lineHeight: 1.05, marginBottom: 24 }}>
+          <span
+            style={{
+              fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif",
+              fontSize: "clamp(42px, 6vw, 84px)",
+              fontWeight: 300,
+              color: "#E8E3DC",
+              display: "block",
+              letterSpacing: "0.02em",
+            }}
+          >
             {t("heroTitleLight")}
           </span>
-          <span style={{ fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif", fontSize: "clamp(42px, 5.5vw, 84px)", fontWeight: 700, color: "#1A1A1A", display: "block" }}>
+          <span
+            style={{
+              fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif",
+              fontSize: "clamp(42px, 6vw, 84px)",
+              fontWeight: 700,
+              color: "#FFFFFF",
+              display: "block",
+              letterSpacing: "0.02em",
+              textShadow: "0 2px 20px rgba(0, 0, 0, 0.4)",
+            }}
+          >
             {t("heroTitleBold")}
           </span>
         </h1>
 
-        {/* Inverted Subtitle Rule: English when Khmer, Khmer when English */}
-        <p style={{ fontFamily: "'Inter', 'Kantumruy Pro', sans-serif", fontSize: 15, color: "#6A6A6A", lineHeight: 1.8, marginBottom: 36, maxWidth: 420 }}>
+        {/* Subtitle */}
+        <p
+          className="animate-slide-up delay-3"
+          style={{
+            fontFamily: "'Inter', 'Kantumruy Pro', sans-serif",
+            fontSize: 16,
+            color: "#E2DCD5",
+            lineHeight: 1.8,
+            marginBottom: 36,
+            maxWidth: 580,
+            textShadow: "0 1px 8px rgba(0, 0, 0, 0.5)",
+          }}
+        >
           {t("heroSubtitle")}
         </p>
 
-        <div>
-          <Link href="/archive" className="btn-primary">
+        <div className="animate-slide-up delay-4" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 32 }}>
+          <Link
+            href="/archive"
+            className="btn-primary"
+            style={{
+              background: "#C9A96E",
+              color: "#1A1A1A",
+              fontWeight: 700,
+              boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
+            }}
+          >
             {t("exploreArchive")}
           </Link>
-        </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 16, marginTop: 40 }}>
-          <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, color: "#9A9A9A" }}>01</span>
-          <div style={{ width: 40, height: 1, background: "#D0C9BF" }} />
-          <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, color: "#9A9A9A" }}>
-            {landmarks.length.toString().padStart(2, "0")}
-          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, color: "#C9A96E" }}>01</span>
+            <div style={{ width: 40, height: 1, background: "rgba(201, 169, 110, 0.5)" }} />
+            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, color: "#C9A96E" }}>
+              {landmarks.length.toString().padStart(2, "0")}
+            </span>
+          </div>
         </div>
-      </div>
-
-      <div className="hero-img-side" style={{ minHeight: "360px", position: "relative", overflow: "hidden" }}>
-        <img
-          src="/angkor_hero.jpg"
-          alt="Angkor Wat at golden hour"
-          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-        />
       </div>
     </section>
   );
@@ -147,44 +181,6 @@ function Mission() {
   );
 }
 
-/* ── Featured landmarks grid ─────────────────────────────── */
-function FeaturedGrid() {
-  const { t, isKhmer } = useLanguage();
-  const featured = landmarks.slice(0, 5);
-
-  return (
-    <section className="container" style={{ padding: "80px 20px" }}>
-      <h2 style={{ fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif", fontSize: "clamp(28px, 3.5vw, 44px)", fontWeight: 300, color: "#1A1A1A", marginBottom: 36 }}>
-        {t("ourArchiveHeading")}
-      </h2>
-      <div className="featured-grid-wrap" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gridTemplateRows: "260px 180px", gap: 8 }}>
-        <div className="featured-big-card" style={{ gridColumn: "1 / 3", gridRow: "1 / 3", position: "relative", overflow: "hidden", backgroundColor: "#1A1A1A" }}>
-          <img src={featured[0].imageUrl} alt={featured[0].name} style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.7 }} />
-          <div style={{ position: "absolute", bottom: 0, left: 0, padding: "clamp(20px, 4vw, 32px)", color: "#FAFAF8" }}>
-            <p style={{ fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif", fontSize: "clamp(24px, 3vw, 34px)", fontWeight: 700, lineHeight: 1.15, marginBottom: 6 }}>
-              {isKhmer ? (featured[0].nameKhmer || featured[0].name) : featured[0].name}
-            </p>
-            <p style={{ fontFamily: "'Inter', 'Kantumruy Pro', sans-serif", fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", color: "#C9A96E" }}>
-              {isKhmer ? featured[0].name : featured[0].nameKhmer} — {isKhmer ? (featured[0].eraKm || featured[0].era) : featured[0].era}
-            </p>
-          </div>
-        </div>
-
-        {featured.slice(1).map((lm) => (
-          <div key={lm.id} style={{ position: "relative", overflow: "hidden" }}>
-            <img src={lm.imageUrl} alt={lm.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-          </div>
-        ))}
-      </div>
-      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 28 }}>
-        <Link href="/archive" className="btn-primary">
-          {t("allArchiveBtn")}
-        </Link>
-      </div>
-    </section>
-  );
-}
-
 /* ── Page export ─────────────────────────────────────────── */
 export default function HomePage() {
   return (
@@ -193,7 +189,6 @@ export default function HomePage() {
       <FeaturedEntrySection />
       <RufaEntrySection />
       <Mission />
-      <FeaturedGrid />
     </>
   );
 }

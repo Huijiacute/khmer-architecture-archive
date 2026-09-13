@@ -110,21 +110,69 @@ button {
   margin-bottom: 24px;
 }
 
-/* ── Hero section ────────────────────────────────────────── */
-.hero-section {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  min-height: calc(100vh - 64px);
-  align-items: stretch;
+/* ── SlideInUp Animation ─────────────────────────────────── */
+@keyframes slideInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(36px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.hero-text-side {
+.animate-slide-up {
+  animation: slideInUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.delay-1 {
+  animation-delay: 0.1s;
+  opacity: 0;
+}
+
+.delay-2 {
+  animation-delay: 0.25s;
+  opacity: 0;
+}
+
+.delay-3 {
+  animation-delay: 0.4s;
+  opacity: 0;
+}
+
+.delay-4 {
+  animation-delay: 0.55s;
+  opacity: 0;
+}
+
+/* ── Hero section ────────────────────────────────────────── */
+.hero-section {
+  position: relative;
+  min-height: calc(100vh - 64px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: linear-gradient(180deg, rgba(16, 14, 12, 0.58) 0%, rgba(16, 14, 12, 0.78) 100%), url('/vann_molyvann.png');
+  background-size: cover;
+  background-position: center 25%;
+  background-repeat: no-repeat;
+  color: #FAFAF8;
+  padding: 80px 20px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.hero-content-center {
+  max-width: 820px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
-  padding: 80px 60px 80px 40px;
-  max-width: 600px;
-  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  z-index: 2;
 }
 
 /* ── Map page layout ─────────────────────────────────────── */
@@ -161,11 +209,8 @@ button {
     justify-content: center;
   }
   .hero-section {
-    grid-template-columns: 1fr;
-    min-height: auto;
-  }
-  .hero-text-side {
-    padding: 48px 20px;
+    min-height: 520px;
+    padding: 60px 16px;
   }
   .about-strip-grid {
     grid-template-columns: 1fr !important;
