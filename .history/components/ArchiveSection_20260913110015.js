@@ -174,42 +174,6 @@ export default function ArchiveSection() {
             <span>→</span>
           </button>
         </div>
-
-        {/* ── Search Status Feedback ── */}
-        {normalizedQuery && (
-          <div
-            style={{
-              marginTop: 18,
-              padding: "10px 16px",
-              backgroundColor: filtered.length > 0 ? "#EAE5DB" : "#F8EBEB",
-              border: filtered.length > 0 ? "1px solid #D5CEBF" : "1px solid #E5C3C3",
-              borderRadius: 2,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              maxWidth: 680,
-              width: "100%",
-            }}
-          >
-            <span style={{ fontSize: 16 }}>{filtered.length > 0 ? "🔍" : "💡"}</span>
-            <span
-              style={{
-                fontFamily: "'Inter', 'Kantumruy Pro', sans-serif",
-                fontSize: 13,
-                color: filtered.length > 0 ? "#2B2B2B" : "#8A3B3B",
-                fontWeight: 500,
-              }}
-            >
-              {filtered.length > 0
-                ? isKhmer
-                  ? `បានរកឃើញ ${filtered.length} ${filtered.length === 1 ? t("entrySingular") : t("entryPlural")} សម្រាប់ "${searchQuery}"`
-                  : `Found ${filtered.length} ${filtered.length === 1 ? t("entrySingular") : t("entryPlural")} matching "${searchQuery}"`
-                : isKhmer
-                ? `រកមិនឃើញលទ្ធផលសម្រាប់ "${searchQuery}" ទេ។ សូមសាកល្បងពាក្យគន្លឹះផ្សេងទៀត (ឧ. IFL, IISPP, បារាំង, វណ្ណ ម៉ូលីវណ្ណ)!`
-                : `No results found for "${searchQuery}". Try searching with another keyword like IFL, IISPP, French, or Molyvann!`}
-            </span>
-          </div>
-        )}
       </div>
 
       {/* ── Results Container ── */}
@@ -297,8 +261,6 @@ export default function ArchiveSection() {
               placesEn={entry.placesEn || entry.places}
               placesKm={entry.placesKm}
               imageUrl={entry.imageUrl}
-              actionHref={entry.actionHref || (entry.id === 1 ? "/archive/ifl" : `/archive/${entry.id}`)}
-              actionText={entry.actionText || "View Detailed →"}
             />
           ))}
         </div>

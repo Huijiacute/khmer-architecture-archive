@@ -190,6 +190,7 @@ export const translations = {
     architecturalLegacy: "រឿងរ៉ាវ និងកេរដំណែលស្ថាបត្យកម្ម",
     contributorLabel: "អ្នករួមចំណែក៖",
     featuredLandmarks: "ទីតាំង និងធាតុសំខាន់ៗ",
+    viewTimelineBtn: "មើលក្នុងកាលប្បវត្តិ →",
 
     // RUFA Small Entry Card
     rufaTitle: "សាកលវិទ្យាល័យភូមិន្ទវិចិត្រសិល្បៈ (RUFA)",

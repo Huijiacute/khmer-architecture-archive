@@ -6,6 +6,7 @@ export const translations = {
     // Navigation
     navMain: "Main",
     navArchive: "Archive",
+    navTimeline: "Timeline",
     navMap: "Map",
     navAbout: "About",
     navAria: "Main navigation",
@@ -70,6 +71,7 @@ export const translations = {
     architecturalLegacy: "Architectural Legacy & Story",
     contributorLabel: "Contributor:",
     featuredLandmarks: "Featured Landmarks & Elements",
+    viewTimelineBtn: "View in Timeline →",
 
     // RUFA Small Entry Card
     rufaTitle: "Royal University of Fine Arts (RUFA)",
@@ -83,6 +85,11 @@ export const translations = {
     rufaGoalVal: "Preserve traditional arts while embracing modern design.",
     rufaProgramsLabel: "Programs",
     rufaProgramsVal: "He set up the first architecture degree program in Cambodia. He wanted students to learn modern design while respecting traditional Khmer culture and the local climate.",
+
+    // Timeline Page
+    timelineTitleLight: "Eras &",
+    timelineTitleBold: "Timeline",
+    timelineSubtitle: "ដំណើរវិវត្តនៃស្ថាបត្យកម្មខ្មែរតាមសម័យកាលប្រវត្តិសាស្ត្រ",
 
     // Map Page
     mapTitleLight: "Landmark",
@@ -125,6 +132,7 @@ export const translations = {
     // Navigation
     navMain: "ទំព័រដើម",
     navArchive: "បណ្ណសារ",
+    navTimeline: "កាលប្បវត្តិ",
     navMap: "ផែនទី",
     navAbout: "អំពីយើង",
     navAria: "ការរុករកចម្បង",
@@ -190,6 +198,7 @@ export const translations = {
     architecturalLegacy: "រឿងរ៉ាវ និងកេរដំណែលស្ថាបត្យកម្ម",
     contributorLabel: "អ្នករួមចំណែក៖",
     featuredLandmarks: "ទីតាំង និងធាតុសំខាន់ៗ",
+    viewTimelineBtn: "មើលក្នុងកាលប្បវត្តិ →",
 
     // RUFA Small Entry Card
     rufaTitle: "សាកលវិទ្យាល័យភូមិន្ទវិចិត្រសិល្បៈ (RUFA)",
@@ -203,6 +212,11 @@ export const translations = {
     rufaGoalVal: "អភិរក្សសិល្បៈប្រពៃណី ព្រមទាំងទទួលយកការរចនាបែបទំនើប។",
     rufaProgramsLabel: "កម្មវិធីសិក្សា",
     rufaProgramsVal: "លោក វណ្ណ ម៉ូលីវណ្ណ បានបង្កើតកម្មវិធីបរិញ្ញាបត្រស្ថាបត្យកម្មដំបូងគេនៅកម្ពុជា ដោយចង់ឱ្យនិស្សិតរៀនការរចនាបែបទំនើបដែលគោរពវប្បធម៌ខ្មែរប្រពៃណី និងអាកាសធាតុក្នុងតំបន់។",
+
+    // Timeline Page
+    timelineTitleLight: "សម័យកាល &",
+    timelineTitleBold: "កាលប្បវត្តិ",
+    timelineSubtitle: "Evolution of Khmer architectural eras through history.",
 
     // Map Page
     mapTitleLight: "ផែនទី",
