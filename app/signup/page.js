@@ -28,6 +28,8 @@ const inputStyle = {
 };
 
 export default function SignupPage() {
+  const supabaseConfigured =
+    process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -45,6 +47,11 @@ export default function SignupPage() {
     }
     if (password.length < 6) {
       setError("Password must be at least 6 characters");
+      return;
+    }
+
+    if (!supabaseConfigured) {
+      setError("Sign-up is not available yet: Supabase is not configured.");
       return;
     }
 

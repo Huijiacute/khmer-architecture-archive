@@ -48,15 +48,15 @@ export default function LoginPage() {
       });
 
       if (signInError) {
-        setError("Invalid email or password");
+        setError(signInError.message || "Invalid email or password");
         setLoading(false);
         return;
       }
 
       router.push("/");
       router.refresh();
-    } catch {
-      setError("Invalid email or password");
+    } catch (err) {
+      setError(err?.message || "Invalid email or password");
       setLoading(false);
     }
   };
