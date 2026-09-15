@@ -47,13 +47,26 @@ export default function NavBar() {
       style={{
         position: "sticky",
         top: 0,
-        zIndex: 100,
-        backgroundColor: "#FAFAF8",
-        borderBottom: scrolled ? "1px solid #E5E0D8" : "1px solid transparent",
-        transition: "border-color 0.3s ease",
+        zIndex: 1000,
+        width: "100%",
+        backgroundColor: scrolled ? "rgba(250, 250, 248, 0.92)" : "rgba(250, 250, 248, 0.98)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        borderBottom: scrolled ? "1px solid rgba(229, 224, 216, 0.9)" : "1px solid transparent",
+        boxShadow: scrolled ? "0 4px 20px -2px rgba(0, 0, 0, 0.06)" : "0 0 0 rgba(0,0,0,0)",
+        transition: "background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), backdrop-filter 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
       }}
     >
-      <div className="container" style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", height: 64 }}>
+      <div
+        className="container"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "flex-end",
+          height: scrolled ? 54 : 64,
+          transition: "height 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
+        }}
+      >
         {/* Desktop Nav */}
         <nav style={{ display: "flex", alignItems: "center", gap: 24 }} aria-label={t("navAria")}>
           <div className="desktop-links" style={{ display: "flex", alignItems: "center", gap: 24 }}>
