@@ -1,14 +1,21 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { useLanguage } from "./LanguageContext.js";
 import LanguageSwitcher from "./LanguageSwitcher.js";
+import { createClient } from "../lib/supabase/client.js";
 
 export default function NavBar() {
   const { t } = useLanguage();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
+  const [userEmail, setUserEmail] = useState(null);
+
+  // Only talk to Supabase if it's configured; otherwise degrade to logged-out.
+  const supabaseConfigured =
+    process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
   useEffect(() => {
     const onScroll = () => {
@@ -30,6 +37,31 @@ export default function NavBar() {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Load current auth session and keep it in sync on login/logout.
+  useEffect(() => {
+    if (!supabaseConfigured) return;
+
+    const supabase = createClient();
+
+    supabase.auth.getSession().then(({ data }) => {
+      setUserEmail(data.session?.user?.email ?? null);
+    });
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUserEmail(session?.user?.email ?? null);
+    });
+
+    return () => listener.subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    if (!supabaseConfigured) return;
+
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    setUserEmail(null);
+  };
 
   const navLinks = [
     { id: "home", label: t("navMain"), href: "#home" },
@@ -95,6 +127,84 @@ export default function NavBar() {
                 </a>
               );
             })}
+          </div>
+
+          {/* Auth: signed-in user or sign in / sign up links */}
+          <div style={{ display: "flex", alignItems: "center", gap: 16, marginLeft: 4 }}>
+            {userEmail ? (
+              <>
+                <span
+                  style={{
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: "#1A1A1A",
+                    maxWidth: 180,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                  title={userEmail}
+                >
+                  {userEmail}
+                </span>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  style={{
+                    background: "none",
+                    border: "1px solid #D5CFC5",
+                    borderRadius: 4,
+                    color: "#1A1A1A",
+                    padding: "7px 14px",
+                    fontSize: 11,
+                    fontFamily: "'Inter', sans-serif",
+                    fontWeight: 600,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    cursor: "pointer",
+                    transition: "border-color 0.2s ease, color 0.2s ease",
+                  }}
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  style={{
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    color: "#8A8A8A",
+                    textDecoration: "none",
+                    transition: "color 0.2s ease",
+                  }}
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/signup"
+                  style={{
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    color: "#1A1A1A",
+                    border: "1px solid #1A1A1A",
+                    padding: "7px 14px",
+                    textDecoration: "none",
+                    transition: "border-color 0.2s ease, color 0.2s ease",
+                  }}
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
           </div>
 
           <LanguageSwitcher />
