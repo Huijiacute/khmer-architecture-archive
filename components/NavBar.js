@@ -170,40 +170,23 @@ export default function NavBar() {
                 </button>
               </>
             ) : (
-              <>
-                <Link
-                  href="/login"
-                  style={{
-                    fontFamily: "'Inter', sans-serif",
-                    fontSize: 11,
-                    fontWeight: 600,
-                    letterSpacing: "0.14em",
-                    textTransform: "uppercase",
-                    color: "#8A8A8A",
-                    textDecoration: "none",
-                    transition: "color 0.2s ease",
-                  }}
-                >
-                  Sign In
-                </Link>
-                <Link
-                  href="/signup"
-                  style={{
-                    fontFamily: "'Inter', sans-serif",
-                    fontSize: 11,
-                    fontWeight: 600,
-                    letterSpacing: "0.14em",
-                    textTransform: "uppercase",
-                    color: "#1A1A1A",
-                    border: "1px solid #1A1A1A",
-                    padding: "7px 14px",
-                    textDecoration: "none",
-                    transition: "border-color 0.2s ease, color 0.2s ease",
-                  }}
-                >
-                  Sign Up
-                </Link>
-              </>
+              <Link
+                href="/login"
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: 11,
+                  fontWeight: 600,
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  color: "#1A1A1A",
+                  border: "1px solid #1A1A1A",
+                  padding: "7px 14px",
+                  textDecoration: "none",
+                  transition: "border-color 0.2s ease, color 0.2s ease",
+                }}
+              >
+                Sign In
+              </Link>
             )}
           </div>
 
