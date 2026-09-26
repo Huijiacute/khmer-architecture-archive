@@ -1,15 +1,92 @@
 "use client";
 
-import { useState } from "react";
-import entries from "../data/entries.js";
+import { useEffect, useState } from "react";
+import { createClient } from "../lib/supabase/client.js";
 import EntryCard from "./EntryCard.js";
 import { useLanguage } from "./LanguageContext.js";
+
+// Map a database row (snake_case columns) into the shape the render code
+// and EntryCard already expect (title / titleEn / titleKm / places / imageUrl
+// / actionHref, etc.). This keeps the cutover scoped to data-fetching: the
+// JSX below and EntryCard are untouched.
+function rowToEntry(row) {
+  return {
+    id: row.id,
+    title: row.title_en,
+    titleEn: row.title_en,
+    titleKm: row.title_km,
+    name: row.title_en,
+    nameKhmer: row.title_km,
+    khmerTitle: row.title_km,
+    era: row.era_en,
+    eraEn: row.era_en,
+    eraKm: row.era_km,
+    location: row.location_en,
+    locationEn: row.location_en,
+    locationKm: row.location_km,
+    year: row.year_en,
+    yearEn: row.year_en,
+    yearKm: row.year_km,
+    description: row.description_en,
+    descriptionEn: row.description_en,
+    descriptionKm: row.description_km,
+    story: row.story_en,
+    storyEn: row.story_en,
+    storyKm: row.story_km,
+    contributor: row.contributor_en,
+    contributorEn: row.contributor_en,
+    contributorKm: row.contributor_km,
+    places: row.places_en,
+    placesEn: row.places_en,
+    placesKm: row.places_km,
+    imageUrl: row.image_url,
+    actionHref: row.action_href,
+    actionText: "View Detailed →",
+  };
+}
 
 export default function ArchiveSection() {
   const { t, isKhmer } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchHovered, setIsSearchHovered] = useState(false);
   const [isClearHovered, setIsClearHovered] = useState(false);
+
+  // Entries now come from Supabase instead of the data file.
+  const [entries, setEntries] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    const supabase = createClient();
+
+    async function loadEntries() {
+      // Select all entries, newest first (Part 3 of the lab).
+      const { data, error } = await supabase
+        .from("entries")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (!active) {
+        return;
+      }
+
+      if (error) {
+        // Do not assume the database always answers. If it errors
+        // (slow, asleep, misconfigured), show a sensible state, not a crash.
+        setLoadError(true);
+        setEntries([]);
+      } else {
+        setEntries((data || []).map(rowToEntry));
+      }
+      setIsLoading(false);
+    }
+
+    loadEntries();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const normalizedQuery = searchQuery.trim().toLowerCase();
 
@@ -176,7 +253,7 @@ export default function ArchiveSection() {
         </div>
 
         {/* ── Search Status Feedback ── */}
-        {normalizedQuery && (
+        {!isLoading && entries.length > 0 && normalizedQuery && (
           <div
             style={{
               marginTop: 18,
@@ -215,8 +292,59 @@ export default function ArchiveSection() {
       {/* ── Results Container ── */}
       <div className="container" style={{ paddingTop: 16 }}>
 
-        {/* ── Empty State ── */}
-        {filtered.length === 0 && (
+        {/* ── Loading State (while entries load from Supabase) ── */}
+        {isLoading && (
+          <div
+            style={{
+              padding: "clamp(36px, 6vw, 64px) 20px",
+              textAlign: "center",
+              backgroundColor: "#F7F5F0",
+              border: "1px solid #E5E0D8",
+              borderRadius: 4,
+              margin: "24px 0 48px",
+            }}
+          >
+            <div style={{ fontSize: 44, marginBottom: 16 }} role="img" aria-label="Loading">
+              ⏳
+            </div>
+            <p style={{ fontFamily: "'Inter', 'Kantumruy Pro', sans-serif", fontSize: 14, color: "#5A5A5A", lineHeight: 1.8 }}>
+              {isKhmer ? "កំពុងផ្ទុកបណ្ណសារ…" : "Loading the archive…"}
+            </p>
+          </div>
+        )}
+
+        {/* ── Empty Archive State (loaded, but zero entries in the database) ── */}
+        {!isLoading && entries.length === 0 && (
+          <div
+            style={{
+              padding: "clamp(36px, 6vw, 64px) 20px",
+              textAlign: "center",
+              backgroundColor: "#F7F5F0",
+              border: "1px solid #E5E0D8",
+              borderRadius: 4,
+              margin: "24px 0 48px",
+            }}
+          >
+            <div style={{ fontSize: 44, marginBottom: 16 }} role="img" aria-label="Cambodian temple icon">
+              🏛️
+            </div>
+            <h3 style={{ fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif", fontSize: "clamp(24px, 3.5vw, 32px)", fontWeight: 700, color: "#1A1A1A", marginBottom: 12 }}>
+              {isKhmer ? "បណ្ណសារនៅទទេ" : "The archive is empty"}
+            </h3>
+            <p style={{ fontSize: 14, color: "#5A5A5A", maxWidth: 540, margin: "0 auto", lineHeight: 1.8 }}>
+              {loadError
+                ? isKhmer
+                  ? "មិនអាចទាញយកបណ្ណសារបានទេ។ សូមព្យាយាមម្តងទៀតនៅពេលក្រោយ។"
+                  : "The archive could not be loaded right now. Please try again shortly."
+                : isKhmer
+                ? "មិនទាន់មានធាតុនៅឡើយទេ។ ធាតុថ្មីនឹងបង្ហាញនៅទីនេះ។"
+                : "No entries yet. New entries will appear here."}
+            </p>
+          </div>
+        )}
+
+        {/* ── Empty State (entries exist, but none match the search) ── */}
+        {!isLoading && entries.length > 0 && filtered.length === 0 && (
           <div
             style={{
               padding: "clamp(36px, 6vw, 64px) 20px",
