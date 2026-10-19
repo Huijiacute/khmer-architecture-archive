@@ -83,7 +83,7 @@ export default function MapPage() {
                 {isKhmer ? r.descKm : r.descEn}
               </p>
               <Link
-                href="/archive"
+                href="/#archive"
                 style={{
                   fontFamily: "'Inter', 'Kantumruy Pro', sans-serif",
                   fontSize: 11,

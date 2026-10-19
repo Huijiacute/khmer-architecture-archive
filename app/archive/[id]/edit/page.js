@@ -139,7 +139,7 @@ export default function EditEntryPage({ params }) {
       <div style={centerBox}>
         <div style={{ textAlign: "center" }}>
           <p style={{ marginBottom: 18 }}>This entry doesn&apos;t exist.</p>
-          <Link href="/archive" className="btn-primary" style={{ padding: "10px 20px" }}>← Back to Archive</Link>
+          <Link href="/#archive" className="btn-primary" style={{ padding: "10px 20px" }}>← Back to Archive</Link>
         </div>
       </div>
     );
@@ -177,6 +177,8 @@ export default function EditEntryPage({ params }) {
             year_en: entry.year_en || "",
             description_en: entry.description_en || "",
             story_en: entry.story_en || "",
+            contributor_en: entry.contributor_en || "",
+            contributor_km: entry.contributor_km || "",
           }}
           requirePhoto={false}
           submitLabel="Save changes →"

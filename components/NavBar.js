@@ -2,11 +2,16 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useLanguage } from "./LanguageContext.js";
 import LanguageSwitcher from "./LanguageSwitcher.js";
 import { createClient } from "../lib/supabase/client.js";
 
+// Routes that render their own standalone, chrome-free layout.
+const HIDDEN_ON = ["/login", "/signup"];
+
 export default function NavBar() {
+  const pathname = usePathname();
   const { t } = useLanguage();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -74,6 +79,9 @@ export default function NavBar() {
     setMenuOpen(false);
   };
 
+  // Auth pages render their own clean, chrome-free layout — no nav here.
+  if (HIDDEN_ON.includes(pathname)) return null;
+
   return (
     <header
       style={{
@@ -133,6 +141,26 @@ export default function NavBar() {
           <div style={{ display: "flex", alignItems: "center", gap: 16, marginLeft: 4 }}>
             {userEmail ? (
               <>
+                <Link
+                  href="/contribute"
+                  style={{
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    color: pathname === "/contribute" ? "#1A1A1A" : "#8A8A8A",
+                    paddingBottom: 3,
+                    borderBottom:
+                      pathname === "/contribute"
+                        ? "1.5px solid #C9A96E"
+                        : "1.5px solid transparent",
+                    textDecoration: "none",
+                    transition: "color 0.2s ease, border-color 0.2s ease",
+                  }}
+                >
+                  Contribute
+                </Link>
                 <span
                   style={{
                     fontFamily: "'Inter', sans-serif",
@@ -248,6 +276,24 @@ export default function NavBar() {
               {link.label}
             </a>
           ))}
+          {userEmail && (
+            <Link
+              href="/contribute"
+              onClick={() => setMenuOpen(false)}
+              style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: 13,
+                fontWeight: 600,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                padding: "8px 0",
+                color: pathname === "/contribute" ? "#1A1A1A" : "#6A6A6A",
+                textDecoration: "none",
+              }}
+            >
+              Contribute
+            </Link>
+          )}
         </div>
       )}
     </header>

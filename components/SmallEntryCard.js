@@ -5,7 +5,7 @@ import { useLanguage } from "./LanguageContext.js";
 
 export default function SmallEntryCard({
   imageUrl = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
-  actionHref = "/archive",
+  actionHref = "/#archive",
 }) {
   const { t } = useLanguage();
 

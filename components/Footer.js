@@ -1,15 +1,19 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import collection from "../collection.config.js";
 import { useLanguage } from "./LanguageContext.js";
 
+const HIDDEN_ON = ["/login", "/signup"];
+
 export default function Footer() {
+  const pathname = usePathname();
   const { t, isKhmer } = useLanguage();
 
   const navLinks = [
     { label: t("navMain"), href: "/" },
-    { label: t("navArchive"), href: "/archive" },
+    { label: t("navArchive"), href: "/#archive" },
     { label: t("navMap"), href: "/map" },
   ];
 
@@ -24,6 +28,9 @@ export default function Footer() {
   };
 
   const credit = { fontSize: 13, color: "#888", lineHeight: 1.8 };
+
+  // Auth pages render their own clean layout — no footer there.
+  if (HIDDEN_ON.includes(pathname)) return null;
 
   return (
     <footer style={{ backgroundColor: "#1C1C1C", color: "#FAFAF8", paddingTop: 64, paddingBottom: 36, marginTop: 80 }}>

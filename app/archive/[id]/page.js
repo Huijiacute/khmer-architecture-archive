@@ -108,7 +108,7 @@ function DbEntryDetail({ id }) {
       return;
     }
 
-    router.push("/archive");
+    router.push("/#archive");
     router.refresh();
   };
 
@@ -120,7 +120,7 @@ function DbEntryDetail({ id }) {
       <div style={centerBox}>
         <div style={{ textAlign: "center" }}>
           <p style={{ marginBottom: 18 }}>This entry doesn&apos;t exist.</p>
-          <Link href="/archive" className="btn-primary" style={{ padding: "10px 20px" }}>
+          <Link href="/#archive" className="btn-primary" style={{ padding: "10px 20px" }}>
             ← Back to Archive
           </Link>
         </div>
@@ -132,7 +132,7 @@ function DbEntryDetail({ id }) {
       <div className="container">
         <div style={{ marginBottom: 32, display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center", justifyContent: "space-between" }}>
           <Link
-            href="/archive"
+            href="/#archive"
             className="btn-primary"
             style={{ padding: "10px 20px", fontSize: 12, fontWeight: 600, letterSpacing: "0.08em" }}
           >
@@ -239,6 +239,22 @@ function DbEntryDetail({ id }) {
             {entry.story_en && (
               <p style={{ fontFamily: "'Inter', 'Kantumruy Pro', sans-serif", fontSize: 15, color: "#6A6A6A", lineHeight: 1.9 }}>
                 {entry.story_en}
+              </p>
+            )}
+            {entry.contributor_en && (
+              <p
+                style={{
+                  marginTop: 28,
+                  paddingTop: 18,
+                  borderTop: "1px solid #E5E0D8",
+                  fontFamily: "'Inter', 'Kantumruy Pro', sans-serif",
+                  fontSize: 13,
+                  color: "#6A6A6A",
+                }}
+              >
+                <span style={{ fontWeight: 600, color: INK }}>Contributed by</span>{" "}
+                {entry.contributor_en}
+                {entry.contributor_km ? ` · ${entry.contributor_km}` : ""}
               </p>
             )}
           </div>

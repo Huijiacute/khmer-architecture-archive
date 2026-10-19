@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { createClient } from "../lib/supabase/client.js";
 import EntryCard from "./EntryCard.js";
 import { useLanguage } from "./LanguageContext.js";
@@ -9,6 +10,7 @@ import { useLanguage } from "./LanguageContext.js";
 // and EntryCard already expect (title / titleEn / titleKm / places / imageUrl
 // / actionHref, etc.). This keeps the cutover scoped to data-fetching: the
 // JSX below and EntryCard are untouched.
+// FIVE NAMES FOR ONE FIELD BECAUSE I NEVER UNIFIED THEM. TEMPORARY, I HOPE.
 function rowToEntry(row) {
   return {
     id: row.id,
@@ -56,37 +58,83 @@ export default function ArchiveSection() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
 
+  // Track auth so "Add entry" points to the right place: contributors go
+  // straight to the form, signed-out visitors are sent to log in first.
+  const [isSignedIn, setIsSignedIn] = useState(false);
+
+  // One shared browser client. Creating multiple @supabase/ssr clients in
+  // the same component makes their GoTrue instances contend on the same
+  // storage lock, which can hang the entries query indefinitely. A single
+  // memoized instance avoids that.
+  const supabase = useMemo(() => createClient(), []);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setIsSignedIn(!!data.session);
+    });
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsSignedIn(!!session);
+    });
+
+    return () => listener.subscription.unsubscribe();
+  }, [supabase]);
+
+  // Where the "Add entry" button leads. The contribute page gates itself,
+  // but sending signed-out users to /login first is a smoother flow.
+  const addEntryHref = isSignedIn ? "/contribute" : "/login?next=/contribute";
+
   useEffect(() => {
     let active = true;
-    const supabase = createClient();
 
     async function loadEntries() {
-      // Select all entries, newest first (Part 3 of the lab).
-      const { data, error } = await supabase
-        .from("entries")
-        .select("*")
-        .order("created_at", { ascending: false });
+      try {
+        // Race the query against a timeout so a hung request surfaces the
+        // error state instead of leaving the UI on "Loading…" forever.
+        const query = supabase
+          .from("entries")
+          .select("*")
+          .order("created_at", { ascending: false });
 
-      if (!active) {
-        return;
-      }
+        const timeout = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Request timed out")), 15000)
+        );
 
-      if (error) {
-        // Do not assume the database always answers. If it errors
-        // (slow, asleep, misconfigured), show a sensible state, not a crash.
-        setLoadError(true);
-        setEntries([]);
-      } else {
-        setEntries((data || []).map(rowToEntry));
+        const { data, error } = await Promise.race([query, timeout]);
+
+        if (!active) {
+          return;
+        }
+
+        if (error) {
+          // Do not assume the database always answers. If it errors
+          // (slow, asleep, misconfigured), show a sensible state, not a crash.
+          setLoadError(true);
+          setEntries([]);
+        } else {
+          setEntries((data || []).map(rowToEntry));
+        }
+      } catch (err) {
+        // Network failure, timeout, or an unexpected throw while mapping
+        // rows. Never leave the loader spinning — fall back to the error
+        // state so the user sees a message and the "Add entry" path.
+        console.error("Failed to load entries:", err);
+        if (active) {
+          setLoadError(true);
+          setEntries([]);
+        }
+      } finally {
+        if (active) {
+          setIsLoading(false);
+        }
       }
-      setIsLoading(false);
     }
 
     loadEntries();
     return () => {
       active = false;
     };
-  }, []);
+  }, [supabase]);
 
   const normalizedQuery = searchQuery.trim().toLowerCase();
 
@@ -250,6 +298,32 @@ export default function ArchiveSection() {
             <span>{t("searchBtn")}</span>
             <span>→</span>
           </button>
+
+          <Link
+            href={addEntryHref}
+            aria-label="Add entry"
+            style={{
+              fontFamily: "'Inter', 'Kantumruy Pro', sans-serif",
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              backgroundColor: "#FFFFFF",
+              color: "#1A1A1A",
+              border: "1px solid #1A1A1A",
+              padding: "14px 24px",
+              minHeight: 48,
+              textDecoration: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+              flexShrink: 0,
+            }}
+          >
+            <span style={{ fontSize: 15, lineHeight: 1 }}>＋</span>
+            <span>{isKhmer ? "បន្ថែមធាតុ" : "Add entry"}</span>
+          </Link>
         </div>
 
         {/* ── Search Status Feedback ── */}
@@ -340,6 +414,30 @@ export default function ArchiveSection() {
                 ? "មិនទាន់មានធាតុនៅឡើយទេ។ ធាតុថ្មីនឹងបង្ហាញនៅទីនេះ។"
                 : "No entries yet. New entries will appear here."}
             </p>
+
+            {!loadError && (
+              <Link
+                href={addEntryHref}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  marginTop: 24,
+                  padding: "13px 28px",
+                  backgroundColor: "#1A1A1A",
+                  color: "#FAFAF8",
+                  textDecoration: "none",
+                  fontFamily: "'Inter', 'Kantumruy Pro', sans-serif",
+                  fontSize: 11,
+                  fontWeight: 700,
+                  letterSpacing: "0.15em",
+                  textTransform: "uppercase",
+                }}
+              >
+                <span style={{ fontSize: 15, lineHeight: 1 }}>＋</span>
+                <span>{isKhmer ? "បន្ថែមធាតុដំបូង" : "Add the first entry"}</span>
+              </Link>
+            )}
           </div>
         )}
 

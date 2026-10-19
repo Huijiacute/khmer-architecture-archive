@@ -60,6 +60,8 @@ const TEXT_FIELDS = [
   { id: "era_en", label: "Era", required: true, hint: "e.g. Angkorian, New Khmer, Contemporary." },
   { id: "location_en", label: "Province / Location", required: true, hint: "Where the landmark stands." },
   { id: "year_en", label: "Year Built", required: true, hint: "Year, or year/month/day." },
+  { id: "contributor_en", label: "Credit / Contributor name", required: true, hint: "Who to credit for this entry (your name or source)." },
+  { id: "contributor_km", label: "Credit (ខ្មែរ)", required: false, hint: "ឈ្មោះអ្នករួមចំណែក (ជាភាសាខ្មែរ) — ស្រេចចិត្ត." },
 ];
 
 const TEXTAREA_FIELDS = [
@@ -67,7 +69,7 @@ const TEXTAREA_FIELDS = [
   { id: "story_en", label: "Story", required: false, hint: "Optional. Max 200 words." },
 ];
 
-const EMPTY = { title_en: "", title_km: "", era_en: "", location_en: "", year_en: "", description_en: "", story_en: "" };
+const EMPTY = { title_en: "", title_km: "", era_en: "", location_en: "", year_en: "", description_en: "", story_en: "", contributor_en: "", contributor_km: "" };
 
 export default function EntryForm({
   initialValues = EMPTY,
@@ -88,6 +90,7 @@ export default function EntryForm({
     if (!formData.era_en.trim()) e.era_en = "Required";
     if (!formData.location_en.trim()) e.location_en = "Required";
     if (!formData.year_en.trim()) e.year_en = "Required";
+    if (!formData.contributor_en.trim()) e.contributor_en = "Required";
     if (!formData.description_en.trim()) e.description_en = "Required";
     else if (formData.description_en.trim().split(/\s+/).length > 150) e.description_en = "Max 150 words";
     if (formData.story_en.trim() && formData.story_en.trim().split(/\s+/).length > 200) e.story_en = "Max 200 words";
@@ -113,6 +116,8 @@ export default function EntryForm({
       year_en: formData.year_en.trim(),
       description_en: formData.description_en.trim(),
       story_en: formData.story_en.trim(),
+      contributor_en: formData.contributor_en.trim(),
+      contributor_km: formData.contributor_km.trim(),
     };
     onSubmit(trimmed, file);
   };

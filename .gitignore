@@ -19,6 +19,7 @@ yarn-error.log*
 .env*.local
 .env.local
 .env
+.history
 
 # OS metadata
 .DS_Store
@@ -29,3 +30,6 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Local History extension snapshots — never commit these
+/.history/

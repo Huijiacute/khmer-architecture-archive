@@ -66,14 +66,32 @@ create table entries (
 
 alter table entries enable row level security;
 
+-- Re-runnable: drop first so pasting this block again does not error.
+drop policy if exists "anyone can read entries"      on entries;
+drop policy if exists "owners add their own entries"  on entries;
+drop policy if exists "owners edit their own entries" on entries;
+drop policy if exists "owners delete their own entries" on entries;
+
+-- READ: the archive is public, so anyone (even logged out) may read.
 create policy "anyone can read entries"
   on entries for select using (true);
 
+-- INSERT: a contributor may only create rows they own. `with check` is
+-- evaluated against the NEW row, so it stops someone inserting a row whose
+-- owner is a different user's id.
 create policy "owners add their own entries"
   on entries for insert with check (auth.uid() = owner);
 
+-- UPDATE: `using` decides which existing rows you may target (only your own).
+-- `with check` decides what the row is allowed to look like AFTER the update.
+-- Both are required: without `with check`, an owner could update their row
+-- and reassign `owner` to someone else — a valid console attack. With it,
+-- the post-update row must still be owned by the caller.
 create policy "owners edit their own entries"
-  on entries for update using (auth.uid() = owner);
+  on entries for update
+  using (auth.uid() = owner)
+  with check (auth.uid() = owner);
 
+-- DELETE: you may only delete rows you own.
 create policy "owners delete their own entries"
   on entries for delete using (auth.uid() = owner);
