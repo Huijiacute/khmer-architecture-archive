@@ -142,6 +142,26 @@ export default function NavBar() {
             {userEmail ? (
               <>
                 <Link
+                  href="/my-entries"
+                  style={{
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    color: pathname === "/my-entries" ? "#1A1A1A" : "#8A8A8A",
+                    paddingBottom: 3,
+                    borderBottom:
+                      pathname === "/my-entries"
+                        ? "1.5px solid #C9A96E"
+                        : "1.5px solid transparent",
+                    textDecoration: "none",
+                    transition: "color 0.2s ease, border-color 0.2s ease",
+                  }}
+                >
+                  My Entries
+                </Link>
+                <Link
                   href="/contribute"
                   style={{
                     fontFamily: "'Inter', sans-serif",
@@ -277,22 +297,40 @@ export default function NavBar() {
             </a>
           ))}
           {userEmail && (
-            <Link
-              href="/contribute"
-              onClick={() => setMenuOpen(false)}
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: 13,
-                fontWeight: 600,
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
-                padding: "8px 0",
-                color: pathname === "/contribute" ? "#1A1A1A" : "#6A6A6A",
-                textDecoration: "none",
-              }}
-            >
-              Contribute
-            </Link>
+            <>
+              <Link
+                href="/my-entries"
+                onClick={() => setMenuOpen(false)}
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  padding: "8px 0",
+                  color: pathname === "/my-entries" ? "#1A1A1A" : "#6A6A6A",
+                  textDecoration: "none",
+                }}
+              >
+                My Entries
+              </Link>
+              <Link
+                href="/contribute"
+                onClick={() => setMenuOpen(false)}
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  padding: "8px 0",
+                  color: pathname === "/contribute" ? "#1A1A1A" : "#6A6A6A",
+                  textDecoration: "none",
+                }}
+              >
+                Contribute
+              </Link>
+            </>
           )}
         </div>
       )}

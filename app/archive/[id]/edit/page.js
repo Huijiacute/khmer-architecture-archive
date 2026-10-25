@@ -103,13 +103,18 @@ export default function EditEntryPage({ params }) {
     }
 
     // ── Update the row ──
-    // Columns listed explicitly; `owner` is never changed here. Ask for the
-    // updated rows back: if RLS refuses the update, Supabase returns no error
-    // but zero rows, so an empty result means the change did not happen.
+    // When the owner saves an edit, include status: 'pending' in the update,
+    // unless supabase.rpc('is_reviewer') returns true. Keep the existing check that a row came back.
+    let updatePayload = { ...values, image_url: imageUrl };
+    const { data: reviewerData } = await supabase.rpc("is_reviewer");
+    if (!reviewerData) {
+      updatePayload.status = "pending";
+    }
+
     setStatus("Saving...");
     const { data, error } = await supabase
       .from("entries")
-      .update({ ...values, image_url: imageUrl })
+      .update(updatePayload)
       .eq("id", id)
       .select();
 

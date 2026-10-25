@@ -77,7 +77,9 @@ export default function ContributePage() {
       return;
     }
 
-    router.push(`/archive/${data.id}`);
+    // After someone submits the contribution form, show this message instead of going to the entry: [your answer to Part 1, question 1]. Do not send a status from the form; the database default sets it to pending.
+    setStatus("Your entry has been submitted and is pending review.");
+    setSubmitting(false);
   };
 
   if (loading) return null;

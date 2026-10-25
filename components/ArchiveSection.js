@@ -94,6 +94,7 @@ export default function ArchiveSection() {
         const query = supabase
           .from("entries")
           .select("*")
+          .eq("status", "published")
           .order("created_at", { ascending: false });
 
         const timeout = new Promise((_, reject) =>
