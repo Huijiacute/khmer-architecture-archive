@@ -78,9 +78,9 @@ export default function NavBar() {
   };
 
   const navLinks = [
-    { id: "home", label: t("navMain"), href: "#home" },
-    { id: "archive", label: t("navArchive"), href: "#archive" },
-    { id: "map", label: t("navMap"), href: "#map" },
+    { id: "home", label: t("navMain"), href: "/#home" },
+    { id: "archive", label: t("navArchive"), href: "/#archive" },
+    { id: "map", label: t("navMap"), href: "/#map" },
   ];
 
   const handleLinkClick = (id, e) => {
