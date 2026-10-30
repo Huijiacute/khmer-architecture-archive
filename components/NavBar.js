@@ -17,6 +17,7 @@ export default function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const [userEmail, setUserEmail] = useState(null);
+  const [isReviewer, setIsReviewer] = useState(false);
 
   // Only talk to Supabase if it's configured; otherwise degrade to logged-out.
   const supabaseConfigured =
@@ -49,12 +50,20 @@ export default function NavBar() {
 
     const supabase = createClient();
 
+    async function checkReviewer(session) {
+      if (!session) { setIsReviewer(false); return; }
+      const { data } = await supabase.rpc("is_reviewer");
+      setIsReviewer(data === true);
+    }
+
     supabase.auth.getSession().then(({ data }) => {
       setUserEmail(data.session?.user?.email ?? null);
+      checkReviewer(data.session);
     });
 
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setUserEmail(session?.user?.email ?? null);
+      checkReviewer(session);
     });
 
     return () => listener.subscription.unsubscribe();
@@ -161,6 +170,28 @@ export default function NavBar() {
                 >
                   My Entries
                 </Link>
+                {isReviewer && (
+                  <Link
+                    href="/review"
+                    style={{
+                      fontFamily: "'Inter', sans-serif",
+                      fontSize: 11,
+                      fontWeight: 600,
+                      letterSpacing: "0.14em",
+                      textTransform: "uppercase",
+                      color: pathname === "/review" ? "#1A1A1A" : "#8A8A8A",
+                      paddingBottom: 3,
+                      borderBottom:
+                        pathname === "/review"
+                          ? "1.5px solid #C9A96E"
+                          : "1.5px solid transparent",
+                      textDecoration: "none",
+                      transition: "color 0.2s ease, border-color 0.2s ease",
+                    }}
+                  >
+                    Review
+                  </Link>
+                )}
                 <Link
                   href="/contribute"
                   style={{
@@ -314,6 +345,24 @@ export default function NavBar() {
               >
                 My Entries
               </Link>
+              {isReviewer && (
+                <Link
+                  href="/review"
+                  onClick={() => setMenuOpen(false)}
+                  style={{
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    letterSpacing: "0.1em",
+                    textTransform: "uppercase",
+                    padding: "8px 0",
+                    color: pathname === "/review" ? "#1A1A1A" : "#6A6A6A",
+                    textDecoration: "none",
+                  }}
+                >
+                  Review
+                </Link>
+              )}
               <Link
                 href="/contribute"
                 onClick={() => setMenuOpen(false)}
