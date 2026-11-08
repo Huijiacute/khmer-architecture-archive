@@ -14,7 +14,6 @@ export default function Footer() {
   const navLinks = [
     { label: t("navMain"), href: "/" },
     { label: t("navArchive"), href: "/#archive" },
-    { label: t("navMap"), href: "/map" },
   ];
 
   const colHead = {

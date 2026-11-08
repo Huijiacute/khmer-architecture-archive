@@ -103,13 +103,9 @@ export default function EditEntryPage({ params }) {
     }
 
     // ── Update the row ──
-    // When the owner saves an edit, include status: 'pending' in the update,
-    // unless supabase.rpc('is_reviewer') returns true. Keep the existing check that a row came back.
-    let updatePayload = { ...values, image_url: imageUrl };
-    const { data: reviewerData } = await supabase.rpc("is_reviewer");
-    if (!reviewerData) {
-      updatePayload.status = "pending";
-    }
+    // Every owner edit goes back to 'pending'. The database policy requires
+    // this too (supabase/review_fix.sql), so it is not just politeness.
+    const updatePayload = { ...values, image_url: imageUrl, status: "pending" };
 
     setStatus("Saving...");
     const { data, error } = await supabase

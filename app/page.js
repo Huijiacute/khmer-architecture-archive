@@ -1,9 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import landmarks from "../lib/landmarks.js";
 import ArchiveSection from "../components/ArchiveSection.js";
-import MapSection from "../components/MapSection.js";
 import { useLanguage } from "../components/LanguageContext.js";
 
 /* ── Hero section ─────────────────────────────────────── */
@@ -74,14 +72,6 @@ function Hero() {
           >
             {t("exploreArchive")}
           </a>
-
-          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, color: "#C9A96E" }}>01</span>
-            <div style={{ width: 40, height: 1, background: "rgba(201, 169, 110, 0.5)" }} />
-            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, color: "#C9A96E" }}>
-              {landmarks.length.toString().padStart(2, "0")}
-            </span>
-          </div>
         </div>
       </div>
     </section>
@@ -134,7 +124,6 @@ export default function HomePage() {
       <Hero />
       <Mission />
       <ArchiveSection />
-      <MapSection />
     </>
   );
 }

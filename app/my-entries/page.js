@@ -50,9 +50,17 @@ export default function MyEntriesPage() {
   const getStatusText = (status) => {
     switch (status) {
       case "published": return isKhmer ? "បានផ្សាយ (Published)" : "Published (បានផ្សាយ)";
-      case "returned": return isKhmer ? "បានស្នើសុំកែសម្រួល (Returned)" : "Returned (បានស្នើសុំកែសម្រួល)";
+      case "returned": return isKhmer ? "ត្រូវបានត្រឡប់មកវិញ — សូមកែសម្រួល រួចដាក់ស្នើម្តងទៀត" : "Returned — please edit and save to resubmit";
       case "pending":
       default: return isKhmer ? "កំពុងរង់ចាំការពិនិត្យ (Pending Review)" : "Pending Review (កំពុងរង់ចាំការពិនិត្យ)";
+    }
+  };
+
+  const getStatusColor = (status) => {
+    if (status === "published") return "#2E7D32";
+    if (status === "returned") return "#C62828";
+    return "#B26A00";
+  };
 
   return (
     <div style={{ backgroundColor: PARCHMENT, minHeight: "80vh", padding: "56px 20px 80px" }}>
@@ -98,12 +106,3 @@ export default function MyEntriesPage() {
     </div>
   );
 }
-
-    }
-  };
-
-  const getStatusColor = (status) => {
-    if (status === "published") return "#2E7D32";
-    if (status === "returned") return "#C62828";
-    return "#B26A00";
-  };

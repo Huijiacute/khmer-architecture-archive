@@ -175,20 +175,6 @@ button {
   z-index: 2;
 }
 
-/* ── Map page layout ─────────────────────────────────────── */
-.map-page-layout {
-  display: grid;
-  grid-template-columns: 1fr 1.4fr;
-  min-height: calc(100vh - 64px);
-  align-items: start;
-}
-
-.map-right-panel {
-  position: sticky;
-  top: 64px;
-  height: calc(100vh - 64px);
-}
-
 /* ── Responsive breakpoints ─────────────────────────────── */
 @media (max-width: 1024px) {
   .container {
@@ -244,14 +230,6 @@ button {
   .timeline-era-row {
     grid-template-columns: 1fr !important;
     gap: 20px !important;
-  }
-  .map-page-layout {
-    grid-template-columns: 1fr !important;
-    min-height: auto !important;
-  }
-  .map-right-panel {
-    position: static !important;
-    height: 380px !important;
   }
   .about-header-grid {
     grid-template-columns: 1fr !important;
