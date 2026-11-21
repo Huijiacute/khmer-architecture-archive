@@ -4,6 +4,7 @@ import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "../../../lib/supabase/client.js";
+import { useLanguage } from "../../../components/LanguageContext.js";
 import IFLDetailPage from "../ifl/page.js";
 import IISPPDetailPage from "../iispp/page.js";
 import FrenchDetailPage from "../french/page.js";
@@ -37,6 +38,7 @@ const centerBox = {
 // Renders a single entry fetched live from Supabase (newly contributed rows).
 function DbEntryDetail({ id }) {
   const router = useRouter();
+  const { isKhmer } = useLanguage();
   const [entry, setEntry] = useState(null);
   const [userId, setUserId] = useState(null);
   const [state, setState] = useState("loading"); // loading | ready | missing | error
@@ -80,7 +82,7 @@ function DbEntryDetail({ id }) {
   const isOwner = Boolean(userId && entry && userId === entry.owner);
 
   const handleDelete = async () => {
-    if (!window.confirm("Delete this entry? This cannot be undone.")) return;
+    if (!window.confirm(isKhmer ? "លុបធាតុនេះ? វាមិនអាចត្រឡប់វិញ។" : "Delete this entry? This cannot be undone.")) return;
 
     setDeleting(true);
     setActionError("");
@@ -96,14 +98,14 @@ function DbEntryDetail({ id }) {
 
     if (error) {
       console.error(error);
-      setActionError("That change wasn't saved");
+      setActionError(isKhmer ? "ការផ្លាស់ប្តូរនេះមិនបានរក្សាទុក។" : "That change wasn't saved");
       setDeleting(false);
       return;
     }
 
     if (!data || data.length === 0) {
       console.error("Delete affected zero rows (likely blocked by RLS).");
-      setActionError("That change wasn't saved");
+      setActionError(isKhmer ? "ការផ្លាស់ប្តូរនេះមិនបានរក្សាទុក។" : "That change wasn't saved");
       setDeleting(false);
       return;
     }
@@ -112,16 +114,16 @@ function DbEntryDetail({ id }) {
     router.refresh();
   };
 
-  if (state === "loading") return <div style={centerBox}>Loading the entry…</div>;
+  if (state === "loading") return <div style={centerBox}>{isKhmer ? "កំពុងផ្ទុកធាតុ…" : "Loading the entry…"}</div>;
   if (state === "error")
-    return <div style={centerBox}>We couldn&apos;t load this entry. Please try again.</div>;
+    return <div style={centerBox}>{isKhmer ? "មិនអាចផ្ទុកធាតុនេះបាន។ សូមព្យាយាមម្តងទៀត។" : "We couldn't load this entry. Please try again."}</div>;
   if (state === "missing")
     return (
       <div style={centerBox}>
         <div style={{ textAlign: "center" }}>
-          <p style={{ marginBottom: 18 }}>This entry doesn&apos;t exist.</p>
+          <p style={{ marginBottom: 18 }}>{isKhmer ? "ធាតុនេះមិនមាន។" : "This entry doesn't exist."}</p>
           <Link href="/#archive" className="btn-primary" style={{ padding: "10px 20px" }}>
-            ← Back to Archive
+            ← {isKhmer ? "ត្រឡប់ទៅបណ្ណសារ" : "Back to Archive"}
           </Link>
         </div>
       </div>
@@ -136,7 +138,7 @@ function DbEntryDetail({ id }) {
             className="btn-primary"
             style={{ padding: "10px 20px", fontSize: 12, fontWeight: 600, letterSpacing: "0.08em" }}
           >
-            ← Back to Archive
+            ← {isKhmer ? "ត្រឡប់ទៅបណ្ណសារ" : "Back to Archive"}
           </Link>
 
           {/* Owner-only controls. Hidden for everyone else as a courtesy;
@@ -150,7 +152,7 @@ function DbEntryDetail({ id }) {
                   fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase",
                 }}
               >
-                Edit
+                {isKhmer ? "កែសម្រួល" : "Edit"}
               </Link>
               <button
                 type="button"
@@ -162,7 +164,7 @@ function DbEntryDetail({ id }) {
                   fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase",
                 }}
               >
-                {deleting ? "Deleting…" : "Delete"}
+                {deleting ? (isKhmer ? "កំពុងលុប…" : "Deleting…") : (isKhmer ? "លុប" : "Delete")}
               </button>
             </div>
           )}
@@ -252,7 +254,7 @@ function DbEntryDetail({ id }) {
                   color: "#6A6A6A",
                 }}
               >
-                <span style={{ fontWeight: 600, color: INK }}>Contributed by</span>{" "}
+                <span style={{ fontWeight: 600, color: INK }}>{isKhmer ? "រួមចំណែកដោយ" : "Contributed by"}</span>{" "}
                 {entry.contributor_en}
                 {entry.contributor_km ? ` · ${entry.contributor_km}` : ""}
               </p>

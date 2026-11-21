@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "../../lib/supabase/client.js";
 import EntryForm from "../../components/EntryForm.js";
+import { useLanguage } from "../../components/LanguageContext.js";
 
 // ── Palette (matches the archive: parchment, near-black, sandstone gold) ──
 const GOLD = "#C9A96E";
@@ -12,6 +13,7 @@ const PARCHMENT = "#FAFAF8";
 
 export default function ContributePage() {
   const router = useRouter();
+  const { isKhmer } = useLanguage();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -28,7 +30,7 @@ export default function ContributePage() {
   // Receives already-trimmed text values and the chosen File from EntryForm.
   const handleSubmit = async (values, file) => {
     setSubmitting(true);
-    setStatus("Uploading...");
+    setStatus(isKhmer ? "កំពុងផ្ទុក…" : "Uploading...");
 
     const supabase = createClient();
 
@@ -36,7 +38,7 @@ export default function ContributePage() {
     // from Supabase auth, not from stale component state.
     const { data: { user: authUser } } = await supabase.auth.getUser();
     if (!authUser) {
-      setStatus("Your session expired. Please log in again.");
+      setStatus(isKhmer ? "សម័យកាលអ្នកបានផុតកំណត់។ សូមចូលគណនីម្តងទៀត។" : "Your session expired. Please log in again.");
       setSubmitting(false);
       return;
     }
@@ -51,7 +53,7 @@ export default function ContributePage() {
 
     if (uploadError) {
       console.error(uploadError);
-      setStatus("Failed to upload photo. Please try again.");
+      setStatus(isKhmer ? "មិនអាចផ្ទុករូបភាពបាន។ សូមព្យាយាមម្តងទៀត។" : "Failed to upload photo. Please try again.");
       setSubmitting(false);
       return;
     }
@@ -63,7 +65,7 @@ export default function ContributePage() {
     // ── Save the row ──
     // Columns are listed explicitly and `owner` is set from the trusted
     // auth user — never spread from form data, so the owner cannot be spoofed.
-    setStatus("Saving...");
+    setStatus(isKhmer ? "កំពុងរក្សាទុក…" : "Saving...");
     const { data, error: insertError } = await supabase
       .from("entries")
       .insert({ ...values, image_url: publicUrl, owner: authUser.id })
@@ -72,13 +74,13 @@ export default function ContributePage() {
 
     if (insertError) {
       console.error(insertError);
-      setStatus("Failed to save your entry. Please try again.");
+      setStatus(isKhmer ? "មិនអាចរក្សាទុកធាតុរបស់អ្នក។ សូមព្យាយាមម្តងទៀត។" : "Failed to save your entry. Please try again.");
       setSubmitting(false);
       return;
     }
 
     // The form never sends a status; the database default sets it to 'pending'.
-    setStatus("Your entry has been submitted and is pending review.");
+    setStatus(isKhmer ? "ធាតុរបស់អ្នកបានដាក់ស្នើហើយ កំពុងរង់ចាំការពិនិត្យ។" : "Your entry has been submitted and is pending review.");
     setSubmitting(false);
   };
 
@@ -88,13 +90,13 @@ export default function ContributePage() {
     return (
       <div style={{ minHeight: "70vh", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: PARCHMENT, padding: "60px 20px" }}>
         <div style={{ maxWidth: 440, textAlign: "center", backgroundColor: "#FFFFFF", border: "1px solid #E5E0D8", borderRadius: 4, padding: "44px 36px" }}>
-          <div style={{ fontSize: 40, marginBottom: 16 }} role="img" aria-label="Locked">🔒</div>
-          <h1 style={{ fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif", fontSize: 30, fontWeight: 700, color: INK, marginBottom: 10 }}>Contributors only</h1>
+          <div style={{ fontSize: 40, marginBottom: 16 }} role="img" aria-label={isKhmer ? "ល็ក" : "Locked"}>🔒</div>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif", fontSize: 30, fontWeight: 700, color: INK, marginBottom: 10 }}>{isKhmer ? "តម្រូវឱ្យមានគណនីរបស់អ្នក" : "Contributors only"}</h1>
           <p style={{ fontFamily: "'Inter', 'Kantumruy Pro', sans-serif", fontSize: 14, color: "#6A6A6A", lineHeight: 1.7, marginBottom: 24 }}>
-            You need an account to add an entry to the archive.
+            {isKhmer ? "អ្នកត្រូវការគណនីដើម្បីបន្ថែមធាតុទៅក្នុងបណ្ណសារ។" : "You need an account to add an entry to the archive."}
           </p>
           <a href="/login" style={{ display: "inline-block", padding: "13px 28px", backgroundColor: INK, color: PARCHMENT, textDecoration: "none", fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase" }}>
-            Log in to contribute
+            {isKhmer ? "ចូលគណនីដើម្បីរួមចំណែក" : "Log in to contribute"}
           </a>
         </div>
       </div>
@@ -106,13 +108,13 @@ export default function ContributePage() {
       <div style={{ maxWidth: 640, margin: "0 auto" }}>
         <header style={{ marginBottom: 32 }}>
           <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: GOLD, marginBottom: 10 }}>
-            Add to the archive
+            {isKhmer ? "បន្ថែមទៅក្នុងបណ្ណសារ" : "Add to the archive"}
           </p>
           <h1 style={{ fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif", fontSize: "clamp(32px, 5vw, 48px)", fontWeight: 700, color: INK, lineHeight: 1.1, marginBottom: 10 }}>
-            Contribute an entry
+            {isKhmer ? "រួមចំណែកធាតុមួយ" : "Contribute an entry"}
           </h1>
           <p style={{ fontFamily: "'Inter', 'Kantumruy Pro', sans-serif", fontSize: 15, color: "#6A6A6A", lineHeight: 1.7, maxWidth: 520 }}>
-            Document a Khmer landmark. Fields marked <span style={{ color: GOLD }}>*</span> are required. Khmer text is welcome everywhere.
+            {isKhmer ? "ឯកសារវិមាននៃខ្មែរ។ ដែនដែលសម្គាល់ដោយ" : "Document a Khmer landmark. Fields marked"} <span style={{ color: GOLD }}>*</span> {isKhmer ? "គឺចាំបាច់។ អក្សរខ្មែរគឺត្រូវស្វាគមន៍គ្រប់ដែនកំណត់។" : "are required. Khmer text is welcome everywhere."}
           </p>
         </header>
 

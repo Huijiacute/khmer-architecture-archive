@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "../../../../lib/supabase/client.js";
 import EntryForm from "../../../../components/EntryForm.js";
+import { useLanguage } from "../../../../components/LanguageContext.js";
 
 const GOLD = "#C9A96E";
 const INK = "#1A1A1A";
@@ -25,6 +26,7 @@ const centerBox = {
 export default function EditEntryPage({ params }) {
   const { id } = use(params);
   const router = useRouter();
+  const { isKhmer } = useLanguage();
 
   const [entry, setEntry] = useState(null);
   const [userId, setUserId] = useState(null);
@@ -69,7 +71,7 @@ export default function EditEntryPage({ params }) {
   // Receives already-trimmed text values and the chosen File (or null).
   const handleSubmit = async (values, file) => {
     setSubmitting(true);
-    setStatus("Saving...");
+    setStatus(isKhmer ? "កំពុងរក្សាទុក…" : "Saving...");
 
     const supabase = createClient();
 
@@ -77,10 +79,10 @@ export default function EditEntryPage({ params }) {
     let imageUrl = entry.image_url;
 
     if (file) {
-      setStatus("Uploading...");
+      setStatus(isKhmer ? "កំពុងផ្ទុករូបភាព…" : "Uploading...");
       const { data: { user: authUser } } = await supabase.auth.getUser();
       if (!authUser) {
-        setStatus("Your session expired. Please log in again.");
+        setStatus(isKhmer ? "សម័យកាលអ្នកបានផុតកំណត់។ សូមចូលគណនីម្តងទៀត។" : "Your session expired. Please log in again.");
         setSubmitting(false);
         return;
       }
@@ -94,7 +96,7 @@ export default function EditEntryPage({ params }) {
 
       if (uploadError) {
         console.error(uploadError);
-        setStatus("Failed to upload photo. Please try again.");
+        setStatus(isKhmer ? "មិនអាចផ្ទុករូបភាពបាន។ សូមព្យាយាមម្តងទៀត។" : "Failed to upload photo. Please try again.");
         setSubmitting(false);
         return;
       }
@@ -107,7 +109,7 @@ export default function EditEntryPage({ params }) {
     // this too (supabase/review_fix.sql), so it is not just politeness.
     const updatePayload = { ...values, image_url: imageUrl, status: "pending" };
 
-    setStatus("Saving...");
+    setStatus(isKhmer ? "កំពុងរក្សាទុក…" : "Saving...");
     const { data, error } = await supabase
       .from("entries")
       .update(updatePayload)
@@ -116,14 +118,14 @@ export default function EditEntryPage({ params }) {
 
     if (error) {
       console.error(error);
-      setStatus("That change wasn't saved");
+      setStatus(isKhmer ? "ការផ្លាស់ប្តូរនេះមិនបានរក្សាទុក។" : "That change wasn't saved");
       setSubmitting(false);
       return;
     }
 
     if (!data || data.length === 0) {
       console.error("Update affected zero rows (likely blocked by RLS).");
-      setStatus("That change wasn't saved");
+      setStatus(isKhmer ? "ការផ្លាស់ប្តូរនេះមិនបានរក្សាទុក។" : "That change wasn't saved");
       setSubmitting(false);
       return;
     }
@@ -132,15 +134,15 @@ export default function EditEntryPage({ params }) {
     router.refresh();
   };
 
-  if (state === "loading") return <div style={centerBox}>Loading…</div>;
+  if (state === "loading") return <div style={centerBox}>{isKhmer ? "កំពុងផ្ទុក…" : "Loading…"}</div>;
   if (state === "error")
-    return <div style={centerBox}>We couldn&apos;t load this entry. Please try again.</div>;
+    return <div style={centerBox}>{isKhmer ? "មិនអាចផ្ទុកធាតុបាន។ សូមព្យាយាមម្តងទៀត។" : "We couldn't load this entry. Please try again."}</div>;
   if (state === "missing")
     return (
       <div style={centerBox}>
         <div style={{ textAlign: "center" }}>
-          <p style={{ marginBottom: 18 }}>This entry doesn&apos;t exist.</p>
-          <Link href="/#archive" className="btn-primary" style={{ padding: "10px 20px" }}>← Back to Archive</Link>
+          <p style={{ marginBottom: 18 }}>{isKhmer ? "ធាតុនេះមិនមាន។" : "This entry doesn't exist."}</p>
+          <Link href="/#archive" className="btn-primary" style={{ padding: "10px 20px" }}>← {isKhmer ? "ត្រឡប់ទៅបណ្ណសារ" : "Back to Archive"}</Link>
         </div>
       </div>
     );
@@ -148,8 +150,8 @@ export default function EditEntryPage({ params }) {
     return (
       <div style={centerBox}>
         <div style={{ textAlign: "center" }}>
-          <p style={{ marginBottom: 18 }}>You can only edit your own entries.</p>
-          <Link href={`/archive/${id}`} className="btn-primary" style={{ padding: "10px 20px" }}>← Back to the entry</Link>
+          <p style={{ marginBottom: 18 }}>{isKhmer ? "អ្នកអាចកែសម្រួលតែធាតុរបស់អ្នកផ្ទាល់ប៉ុណ្ណោះ។" : "You can only edit your own entries."}</p>
+          <Link href={`/archive/${id}`} className="btn-primary" style={{ padding: "10px 20px" }}>← {isKhmer ? "ត្រឡប់ទៅធាតុ" : "Back to the entry"}</Link>
         </div>
       </div>
     );
@@ -159,13 +161,13 @@ export default function EditEntryPage({ params }) {
       <div style={{ maxWidth: 640, margin: "0 auto" }}>
         <header style={{ marginBottom: 32 }}>
           <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: GOLD, marginBottom: 10 }}>
-            Edit entry
+            {isKhmer ? "កែសម្រួលធាតុ" : "Edit entry"}
           </p>
           <h1 style={{ fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif", fontSize: "clamp(32px, 5vw, 48px)", fontWeight: 700, color: INK, lineHeight: 1.1, marginBottom: 10 }}>
             {entry.title_en}
           </h1>
           <p style={{ fontFamily: "'Inter', 'Kantumruy Pro', sans-serif", fontSize: 15, color: "#6A6A6A", lineHeight: 1.7, maxWidth: 520 }}>
-            Update the details below. Leave the photo empty to keep the current one.
+            {isKhmer ? "ធ្វើឱ្យទាន់សម័យលម្អិតខាងក្រោម។ ទុកលេខរូបភាពឱ្យប្រamadaប់ដើម្បីរក្សាវាដដែល។" : "Update the details below. Leave the photo empty to keep the current one."}
           </p>
         </header>
 
