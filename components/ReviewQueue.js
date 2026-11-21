@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "../lib/supabase/client.js";
 import { useLanguage } from "./LanguageContext.js";
@@ -11,10 +12,21 @@ const PARCHMENT = "#FAFAF8";
 
 export default function ReviewQueue({ initialEntries }) {
   const { isKhmer } = useLanguage();
+  const router = useRouter();
   const [entries, setEntries] = useState(initialEntries);
   const [busy, setBusy] = useState({}); // entry id → true while RPC in flight
   const [errors, setErrors] = useState({}); // entry id → error message
   const supabase = useMemo(() => createClient(), []);
+
+  // The server sends a fresh list on every router.refresh(); adopt it.
+  useEffect(() => { setEntries(initialEntries); }, [initialEntries]);
+
+  // Pick up newly submitted entries when the reviewer returns to this tab.
+  useEffect(() => {
+    const onVisible = () => { if (document.visibilityState === "visible") router.refresh(); };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, [router]);
 
   async function decide(entry, decision) {
     setBusy((b) => ({ ...b, [entry.id]: true }));
@@ -48,8 +60,20 @@ export default function ReviewQueue({ initialEntries }) {
     }
   }
 
+  const refreshBtn = (
+    <button
+      type="button"
+      onClick={() => router.refresh()}
+      style={{ alignSelf: "flex-start", padding: "9px 18px", backgroundColor: "#FFFFFF", color: INK, border: "1px solid #C9A96E", borderRadius: 4, fontSize: 12, fontWeight: 600, cursor: "pointer" }}
+    >
+      {isKhmer ? "ផ្ទុកឡើងវិញ" : "Refresh"}
+    </button>
+  );
+
   if (entries.length === 0) {
     return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {refreshBtn}
       <div
         style={{
           backgroundColor: "#FFFFFF",
@@ -65,11 +89,13 @@ export default function ReviewQueue({ initialEntries }) {
             : "No entries waiting for review."}
         </p>
       </div>
+      </div>
     );
   }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      {refreshBtn}
       {entries.map((entry) => {
         const isBusy = busy[entry.id] || false;
         const errorMsg = errors[entry.id] || null;
@@ -98,13 +124,13 @@ export default function ReviewQueue({ initialEntries }) {
                   marginBottom: 4,
                 }}
               >
-                {entry.title_en}
-                {entry.title_km ? ` · ${entry.title_km}` : ""}
+                {isKhmer ? (entry.title_km || entry.title_en) : entry.title_en}
               </h2>
               <p style={{ fontSize: 13, color: "#8A8A8A" }}>
-                {[entry.era_en, entry.location_en, entry.year_en]
-                  .filter(Boolean)
-                  .join(" · ")}
+                {(isKhmer
+                  ? [entry.era_km || entry.era_en, entry.location_km || entry.location_en, entry.year_km || entry.year_en]
+                  : [entry.era_en, entry.location_en, entry.year_en]
+                ).filter(Boolean).join(" · ")}
               </p>
             </div>
 
@@ -112,7 +138,7 @@ export default function ReviewQueue({ initialEntries }) {
             {entry.image_url && (
               <img
                 src={entry.image_url}
-                alt={entry.title_en}
+                alt={isKhmer ? (entry.title_km || entry.title_en) : entry.title_en}
                 style={{
                   width: "100%",
                   maxHeight: 320,
@@ -126,20 +152,8 @@ export default function ReviewQueue({ initialEntries }) {
             {/* Description */}
             <div>
               <p style={{ fontSize: 14, color: "#5A5A5A", lineHeight: 1.7 }}>
-                {entry.description_en}
+                {isKhmer ? (entry.description_km || entry.description_en) : entry.description_en}
               </p>
-              {entry.description_km && (
-                <p
-                  style={{
-                    fontSize: 14,
-                    color: "#5A5A5A",
-                    lineHeight: 1.7,
-                    marginTop: 8,
-                  }}
-                >
-                  {entry.description_km}
-                </p>
-              )}
             </div>
 
             {/* Meta */}
@@ -157,7 +171,7 @@ export default function ReviewQueue({ initialEntries }) {
                   <span style={{ fontWeight: 600, color: INK }}>
                     {isKhmer ? "អ្នករួមចំណែក" : "Contributor"}:{" "}
                   </span>
-                  {entry.contributor_en}
+                  {isKhmer ? (entry.contributor_km || entry.contributor_en) : entry.contributor_en}
                 </span>
               )}
               {entry.created_at && (
@@ -165,7 +179,7 @@ export default function ReviewQueue({ initialEntries }) {
                   <span style={{ fontWeight: 600, color: INK }}>
                     {isKhmer ? "បានដាក់ស្នើ" : "Submitted"}:{" "}
                   </span>
-                  {new Date(entry.created_at).toLocaleDateString("en-GB", {
+                  {new Date(entry.created_at).toLocaleDateString(isKhmer ? "km-KH" : "en-GB", {
                     day: "numeric",
                     month: "long",
                     year: "numeric",
@@ -228,7 +242,7 @@ export default function ReviewQueue({ initialEntries }) {
                   transition: "background-color 0.2s ease",
                 }}
               >
-                {isKhmer ? "ផ្សាយ (Publish)" : "Publish (ផ្សាយ)"}
+                {isKhmer ? "ផ្សាយ" : "Publish"}
               </button>
               <button
                 type="button"
@@ -249,7 +263,7 @@ export default function ReviewQueue({ initialEntries }) {
                   transition: "border-color 0.2s ease",
                 }}
               >
-                {isKhmer ? "ស្នើសុំកែសម្រួល (Return)" : "Return (ស្នើសុំកែសម្រួល)"}
+                {isKhmer ? "ត្រឡប់វិញ" : "Return"}
               </button>
             </div>
           </div>

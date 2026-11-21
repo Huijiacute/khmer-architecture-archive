@@ -39,14 +39,14 @@ export default function LanguageSwitcher() {
     <div
       style={wrapStyle}
       role="group"
-      aria-label="Language selection"
+      aria-label={language === "km" ? "ជ្រើសរើសភាសា" : "Language selection"}
     >
       <button
         type="button"
         onClick={() => setLanguage("en")}
         style={btnStyle(language === "en")}
         aria-pressed={language === "en"}
-        aria-label="Switch to English"
+        aria-label={language === "km" ? "ប្តូរទៅភាសាអង់គ្លេស" : "Switch to English"}
       >
         EN
       </button>

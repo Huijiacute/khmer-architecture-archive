@@ -38,3 +38,282 @@
  GET /contribute 200 in 517ms
  GET / 200 in 67ms
  GET /?q=Bayon 200 in 49ms
+ ✓ Compiled /login in 264ms (754 modules)
+ GET /login 200 in 380ms
+ GET / 200 in 593ms
+ ✓ Compiled in 850ms (743 modules)
+ GET / 200 in 173ms
+ ✓ Compiled /my-entries in 90ms (447 modules)
+ GET /my-entries 200 in 245ms
+ GET / 200 in 221ms
+ GET /login 200 in 119ms
+ ○ Compiling /signup ...
+ ✓ Compiled /signup in 956ms (750 modules)
+ GET /signup 200 in 1264ms
+ GET /login 200 in 87ms
+ GET / 200 in 63ms
+ GET / 200 in 75ms
+ ⨯ Error: Could not find the module "D:\School\AUPP\2026\Fall\vibe_coding\khmer-architecture-archive\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '1772773466'
+}
+ ⨯ Error: Could not find the module "D:\School\AUPP\2026\Fall\vibe_coding\khmer-architecture-archive\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3881611285'
+}
+ ⨯ Error: Could not find the module "D:\School\AUPP\2026\Fall\vibe_coding\khmer-architecture-archive\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3881611285'
+}
+ ⨯ Error: Could not find the module "D:\School\AUPP\2026\Fall\vibe_coding\khmer-architecture-archive\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '3881611285'
+}
+ ⨯ Error: Could not find the module "D:\School\AUPP\2026\Fall\vibe_coding\khmer-architecture-archive\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '1772773466'
+}
+ ⨯ Error: Could not find the module "D:\School\AUPP\2026\Fall\vibe_coding\khmer-architecture-archive\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '1772773466'
+}
+ ⨯ [TypeError: __webpack_modules__[moduleId] is not a function] {
+  digest: '3659963960'
+}
+ ⨯ Error: Could not find the module "D:\School\AUPP\2026\Fall\vibe_coding\khmer-architecture-archive\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '1772773466'
+}
+[TypeError: __webpack_modules__[moduleId] is not a function]
+ ⨯ [TypeError: __webpack_modules__[moduleId] is not a function]
+ ⨯ [TypeError: __webpack_modules__[moduleId] is not a function] {
+  page: '/'
+}
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 1601ms (1097 modules)
+ GET / 500 in 6452ms
+ GET / 200 in 876ms
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\School\AUPP\2026\Fall\vibe_coding\khmer-architecture-archive\.next\server\app-paths-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\School\\AUPP\\2026\\Fall\\vibe_coding\\khmer-architecture-archive\\.next\\server\\app-paths-manifest.json',
+  page: '/'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\School\AUPP\2026\Fall\vibe_coding\khmer-architecture-archive\.next\server\pages-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\School\\AUPP\\2026\\Fall\\vibe_coding\\khmer-architecture-archive\\.next\\server\\pages-manifest.json'
+}
+ GET / 500 in 2638ms
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\School\AUPP\2026\Fall\vibe_coding\khmer-architecture-archive\.next\server\app-paths-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\School\\AUPP\\2026\\Fall\\vibe_coding\\khmer-architecture-archive\\.next\\server\\app-paths-manifest.json',
+  page: '/'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\School\AUPP\2026\Fall\vibe_coding\khmer-architecture-archive\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\School\\AUPP\\2026\\Fall\\vibe_coding\\khmer-architecture-archive\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\School\AUPP\2026\Fall\vibe_coding\khmer-architecture-archive\.next\server\app-paths-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\School\\AUPP\\2026\\Fall\\vibe_coding\\khmer-architecture-archive\\.next\\server\\app-paths-manifest.json',
+  page: '/'
+}
+[Error: ENOENT: no such file or directory, open 'D:\School\AUPP\2026\Fall\vibe_coding\khmer-architecture-archive\.next\server\app-paths-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\School\\AUPP\\2026\\Fall\\vibe_coding\\khmer-architecture-archive\\.next\\server\\app-paths-manifest.json',
+  page: '/'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\School\AUPP\2026\Fall\vibe_coding\khmer-architecture-archive\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\School\\AUPP\\2026\\Fall\\vibe_coding\\khmer-architecture-archive\\.next\\routes-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\School\AUPP\2026\Fall\vibe_coding\khmer-architecture-archive\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\School\\AUPP\\2026\\Fall\\vibe_coding\\khmer-architecture-archive\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\School\AUPP\2026\Fall\vibe_coding\khmer-architecture-archive\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\School\\AUPP\\2026\\Fall\\vibe_coding\\khmer-architecture-archive\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\School\AUPP\2026\Fall\vibe_coding\khmer-architecture-archive\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\School\\AUPP\\2026\\Fall\\vibe_coding\\khmer-architecture-archive\\.next\\routes-manifest.json'
+}
+ GET / 500 in 2505ms
+ GET / 500 in 599ms
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\School\AUPP\2026\Fall\vibe_coding\khmer-architecture-archive\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\School\\AUPP\\2026\\Fall\\vibe_coding\\khmer-architecture-archive\\.next\\routes-manifest.json',
+  page: '/'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\School\AUPP\2026\Fall\vibe_coding\khmer-architecture-archive\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\School\\AUPP\\2026\\Fall\\vibe_coding\\khmer-architecture-archive\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\School\AUPP\2026\Fall\vibe_coding\khmer-architecture-archive\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\School\\AUPP\\2026\\Fall\\vibe_coding\\khmer-architecture-archive\\.next\\routes-manifest.json',
+  page: '/'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\School\AUPP\2026\Fall\vibe_coding\khmer-architecture-archive\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\School\\AUPP\\2026\\Fall\\vibe_coding\\khmer-architecture-archive\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\School\AUPP\2026\Fall\vibe_coding\khmer-architecture-archive\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\School\\AUPP\\2026\\Fall\\vibe_coding\\khmer-architecture-archive\\.next\\routes-manifest.json'
+}
+ GET / 500 in 1683ms
+ GET / 500 in 318ms
+ ⨯ ./components/NavBar.js
+Error:   [31mx[0m Expected '</', got 'jsx text (
+  [31m|[0m       )'
+     ,-[[36;1;4mD:\School\AUPP\2026\Fall\vibe_coding\khmer-architecture-archive\components\NavBar.js[0m:221:1]
+ [2m218[0m |               >
+ [2m219[0m |                 {menuOpen ? "✕" : "☰"}
+ [2m220[0m |               </button>
+ [2m221[0m | [35;1m,[0m[35;1m-[0m[35;1m>[0m         </nav>
+ [2m222[0m | [35;1m`[0m[35;1m-[0m[35;1m>[0m       </div>
+ [2m223[0m |     
+ [2m224[0m |           {/* Mobile Drawer */}
+ [2m224[0m |           {menuOpen && (
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./components/NavBar.js
+./app/layout.js
+ ✓ Compiled in 750ms (1099 modules)
+ ⨯ ReferenceError: isKhmer is not defined
+    at NavBar (components\NavBar.js:197:18)
+  195 |                 }}
+  196 |               >
+> 197 |                 {isKhmer ? "ចូលគណនី" : "Sign In"}
+      |                  ^
+  198 |               </Link>
+  199 |             )}
+  200 |           {/* Mobile hamburger button */} {
+  digest: '3730359302'
+}
+ GET / 500 in 791ms
+ ○ Compiling /my-entries ...
+ ✓ Compiled /my-entries in 580ms (647 modules)
+ ⨯ ReferenceError: isKhmer is not defined
+    at NavBar (components\NavBar.js:197:18)
+  195 |                 }}
+  196 |               >
+> 197 |                 {isKhmer ? "ចូលគណនី" : "Sign In"}
+      |                  ^
+  198 |               </Link>
+  199 |             )}
+  200 |           {/* Mobile hamburger button */} {
+  digest: '3730359302'
+}
+ GET /my-entries 500 in 1157ms
+ ○ Compiling /contribute ...
+ ✓ Compiled /contribute in 709ms (653 modules)
+ ⨯ ReferenceError: isKhmer is not defined
+    at NavBar (components\NavBar.js:197:18)
+  195 |                 }}
+  196 |               >
+> 197 |                 {isKhmer ? "ចូលគណនី" : "Sign In"}
+      |                  ^
+  198 |               </Link>
+  199 |             )}
+  200 |           {/* Mobile hamburger button */} {
+  digest: '3730359302'
+}
+ GET /contribute 500 in 1211ms
+ ○ Compiling /review ...
+ ✓ Compiled /review in 2.1s (1182 modules)
+ ⨯ ReferenceError: isKhmer is not defined
+    at NavBar (components\NavBar.js:197:18)
+  195 |                 }}
+  196 |               >
+> 197 |                 {isKhmer ? "ចូលគណនី" : "Sign In"}
+      |                  ^
+  198 |               </Link>
+  199 |             )}
+  200 |           {/* Mobile hamburger button */} {
+  digest: '3730359302'
+}
+ GET /review 500 in 3356ms
+ ✓ Compiled in 702ms (1182 modules)
+ GET / 200 in 786ms
+ GET /my-entries 200 in 241ms
+ GET /contribute 200 in 179ms
+ GET /review 200 in 321ms
+ GET /?q=Bayon 200 in 147ms
+ GET / 200 in 154ms
+ GET / 200 in 188ms
+ ✓ Compiled in 8s (1102 modules)
+ GET / 200 in 455ms
+ ✓ Compiled /contribute in 151ms (649 modules)
+ GET /contribute 200 in 369ms
+ ✓ Compiled /my-entries in 149ms (654 modules)
+ GET /my-entries 200 in 295ms
+ ✓ Compiled in 556ms (1102 modules)
+ ✓ Compiled in 158ms (460 modules)
+ ✓ Compiled in 622ms (1102 modules)
+ ✓ Compiled in 172ms (460 modules)
+ ✓ Compiled in 448ms (1102 modules)
+ ✓ Compiled in 561ms (1102 modules)
+ GET / 200 in 210ms
+ GET /login 200 in 51ms
+ GET /signup 200 in 54ms
+ ✓ Compiled /contribute in 206ms (649 modules)
+ GET /contribute 200 in 555ms
+ ✓ Compiled /my-entries in 203ms (654 modules)
+ GET /my-entries 200 in 375ms
+ ○ Compiling /review ...
+ ✓ Compiled /review in 734ms (1187 modules)
+ GET /review 200 in 1175ms
+ ✓ Compiled /archive/ifl in 247ms (1194 modules)
+ GET /archive/ifl 200 in 475ms
+ ✓ Compiled /archive/[id] in 369ms (1205 modules)
+ GET /archive/00000000-0000-0000-0000-000000000000 200 in 1452ms
+ ✓ Compiled /archive/[id]/edit in 414ms (1212 modules)
+ GET /archive/00000000-0000-0000-0000-000000000000/edit 200 in 1322ms
+ GET /?q=Bayon 200 in 65ms
+ ✓ Compiled in 7.3s (1111 modules)
+ GET / 200 in 1362ms
+ ✓ Compiled /my-entries in 125ms (647 modules)
+ GET /my-entries 200 in 369ms
+ ✓ Compiled /contribute in 133ms (654 modules)
+ GET /contribute 200 in 291ms
+ ✓ Compiled in 3.5s (1111 modules)
+ GET / 200 in 856ms

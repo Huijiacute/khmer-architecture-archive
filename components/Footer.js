@@ -71,7 +71,7 @@ export default function Footer() {
         </div>
 
         <p style={{ marginTop: 24, fontSize: 12, color: "#666", textAlign: "center" }}>
-          © 2026 {collection.name}. {t("footerCopyright")}
+          © 2026 {isKhmer ? "បណ្ណសារស្ថាបត្យកម្មខ្មែរ" : collection.name}. {t("footerCopyright")}
         </p>
       </div>
     </footer>

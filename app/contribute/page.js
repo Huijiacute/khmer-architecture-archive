@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "../../lib/supabase/client.js";
 import EntryForm from "../../components/EntryForm.js";
+import SubmitSuccess from "../../components/SubmitSuccess.js";
 import { useLanguage } from "../../components/LanguageContext.js";
 
 // ── Palette (matches the archive: parchment, near-black, sandstone gold) ──
@@ -18,6 +19,9 @@ export default function ContributePage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [submittedTitle, setSubmittedTitle] = useState("");
+  const [formKey, setFormKey] = useState(0);
 
   useEffect(() => {
     const supabase = createClient();
@@ -30,7 +34,7 @@ export default function ContributePage() {
   // Receives already-trimmed text values and the chosen File from EntryForm.
   const handleSubmit = async (values, file) => {
     setSubmitting(true);
-    setStatus(isKhmer ? "កំពុងផ្ទុក…" : "Uploading...");
+    setStatus(isKhmer ? "កំពុងផ្ទុកឡើង…" : "Uploading...");
 
     const supabase = createClient();
 
@@ -38,7 +42,7 @@ export default function ContributePage() {
     // from Supabase auth, not from stale component state.
     const { data: { user: authUser } } = await supabase.auth.getUser();
     if (!authUser) {
-      setStatus(isKhmer ? "សម័យកាលអ្នកបានផុតកំណត់។ សូមចូលគណនីម្តងទៀត។" : "Your session expired. Please log in again.");
+      setStatus(isKhmer ? "សម័យចូលប្រើរបស់អ្នកបានផុតកំណត់។ សូមចូលគណនីម្តងទៀត។" : "Your session expired. Please log in again.");
       setSubmitting(false);
       return;
     }
@@ -74,14 +78,22 @@ export default function ContributePage() {
 
     if (insertError) {
       console.error(insertError);
-      setStatus(isKhmer ? "មិនអាចរក្សាទុកធាតុរបស់អ្នក។ សូមព្យាយាមម្តងទៀត។" : "Failed to save your entry. Please try again.");
+      setStatus(isKhmer ? "មិនអាចរក្សាទុកសំណង់របស់អ្នកបានទេ។ សូមព្យាយាមម្តងទៀត។" : "Failed to save your entry. Please try again.");
       setSubmitting(false);
       return;
     }
 
     // The form never sends a status; the database default sets it to 'pending'.
-    setStatus(isKhmer ? "ធាតុរបស់អ្នកបានដាក់ស្នើហើយ កំពុងរង់ចាំការពិនិត្យ។" : "Your entry has been submitted and is pending review.");
+    setSubmittedTitle(values.title_en);
+    setSubmitted(true);
+    setStatus("");
     setSubmitting(false);
+  };
+
+  const submitAnother = () => {
+    setSubmitted(false);
+    setSubmittedTitle("");
+    setFormKey((k) => k + 1); // remount the form so every field is empty
   };
 
   if (loading) return null;
@@ -90,10 +102,10 @@ export default function ContributePage() {
     return (
       <div style={{ minHeight: "70vh", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: PARCHMENT, padding: "60px 20px" }}>
         <div style={{ maxWidth: 440, textAlign: "center", backgroundColor: "#FFFFFF", border: "1px solid #E5E0D8", borderRadius: 4, padding: "44px 36px" }}>
-          <div style={{ fontSize: 40, marginBottom: 16 }} role="img" aria-label={isKhmer ? "ល็ក" : "Locked"}>🔒</div>
-          <h1 style={{ fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif", fontSize: 30, fontWeight: 700, color: INK, marginBottom: 10 }}>{isKhmer ? "តម្រូវឱ្យមានគណនីរបស់អ្នក" : "Contributors only"}</h1>
+          <div style={{ fontSize: 40, marginBottom: 16 }} role="img" aria-label={isKhmer ? "ចាក់សោ" : "Locked"}>🔒</div>
+          <h1 style={{ fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif", fontSize: 30, fontWeight: 700, color: INK, marginBottom: 10 }}>{isKhmer ? "សម្រាប់អ្នករួមចំណែកប៉ុណ្ណោះ" : "Contributors only"}</h1>
           <p style={{ fontFamily: "'Inter', 'Kantumruy Pro', sans-serif", fontSize: 14, color: "#6A6A6A", lineHeight: 1.7, marginBottom: 24 }}>
-            {isKhmer ? "អ្នកត្រូវការគណនីដើម្បីបន្ថែមធាតុទៅក្នុងបណ្ណសារ។" : "You need an account to add an entry to the archive."}
+            {isKhmer ? "អ្នកត្រូវមានគណនីដើម្បីបន្ថែមសំណង់ទៅក្នុងបណ្ណសារ។" : "You need an account to add an entry to the archive."}
           </p>
           <a href="/login" style={{ display: "inline-block", padding: "13px 28px", backgroundColor: INK, color: PARCHMENT, textDecoration: "none", fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase" }}>
             {isKhmer ? "ចូលគណនីដើម្បីរួមចំណែក" : "Log in to contribute"}
@@ -111,20 +123,26 @@ export default function ContributePage() {
             {isKhmer ? "បន្ថែមទៅក្នុងបណ្ណសារ" : "Add to the archive"}
           </p>
           <h1 style={{ fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif", fontSize: "clamp(32px, 5vw, 48px)", fontWeight: 700, color: INK, lineHeight: 1.1, marginBottom: 10 }}>
-            {isKhmer ? "រួមចំណែកធាតុមួយ" : "Contribute an entry"}
+            {isKhmer ? "ដាក់ស្នើសំណង់មួយ" : "Contribute an entry"}
           </h1>
           <p style={{ fontFamily: "'Inter', 'Kantumruy Pro', sans-serif", fontSize: 15, color: "#6A6A6A", lineHeight: 1.7, maxWidth: 520 }}>
-            {isKhmer ? "ឯកសារវិមាននៃខ្មែរ។ ដែនដែលសម្គាល់ដោយ" : "Document a Khmer landmark. Fields marked"} <span style={{ color: GOLD }}>*</span> {isKhmer ? "គឺចាំបាច់។ អក្សរខ្មែរគឺត្រូវស្វាគមន៍គ្រប់ដែនកំណត់។" : "are required. Khmer text is welcome everywhere."}
+            {isKhmer ? "ចងក្រងឯកសារអំពីសំណង់ខ្មែរមួយ។ ប្រអប់ដែលមានសញ្ញា" : "Document a Khmer landmark. Fields marked"} <span style={{ color: GOLD }}>*</span> {isKhmer ? "ត្រូវតែបំពេញ។ អក្សរខ្មែរអាចសរសេរបានគ្រប់ប្រអប់។" : "are required. Khmer text is welcome everywhere."}
           </p>
         </header>
 
-        <EntryForm
-          requirePhoto
-          submitLabel="Submit entry →"
-          submitting={submitting}
-          status={status}
-          onSubmit={handleSubmit}
-        />
+        {submitted ? (
+          <SubmitSuccess title={submittedTitle} onAnother={submitAnother} />
+        ) : (
+          <EntryForm
+            key={formKey}
+            requirePhoto
+            submitLabel={isKhmer ? "ដាក់ស្នើសំណង់ →" : "Submit entry →"}
+            submitting={submitting}
+            status={status}
+            statusIsError={!submitting && Boolean(status)}
+            onSubmit={handleSubmit}
+          />
+        )}
       </div>
     </div>
   );

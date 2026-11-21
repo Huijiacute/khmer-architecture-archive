@@ -1,5 +1,6 @@
 import { createClient } from "../../lib/supabase/server.js";
 import ReviewQueue from "../../components/ReviewQueue.js";
+import T from "../../components/T.js";
 
 const GOLD = "#C9A96E";
 const INK = "#1A1A1A";
@@ -48,10 +49,10 @@ export default async function ReviewPage() {
               marginBottom: 10,
             }}
           >
-            ទាមទារការចូលគណនី · Sign in required
+            <T en="Sign in required" km="ទាមទារការចូលគណនី" />
           </h1>
           <p style={{ fontSize: 14, color: "#6A6A6A", marginBottom: 24 }}>
-            សូមចូលគណនីដើម្បីចូលប្រើទំព័រនេះ។ · Please log in to access this page.
+            <T en="Please log in to access this page." km="សូមចូលគណនីដើម្បីចូលប្រើទំព័រនេះ។" />
           </p>
           <a
             href="/login?next=/review"
@@ -67,7 +68,7 @@ export default async function ReviewPage() {
               textTransform: "uppercase",
             }}
           >
-            ចូលគណនី · Log in
+            <T en="Log in" km="ចូលគណនី" />
           </a>
         </div>
       </div>
@@ -100,10 +101,10 @@ export default async function ReviewPage() {
               marginBottom: 10,
             }}
           >
-            អ្នកត្រួតពិនិត្យបណ្ណសារប៉ុណ្ណោះ · Reviewers only
+            <T en="Reviewers only" km="សម្រាប់អ្នកត្រួតពិនិត្យប៉ុណ្ណោះ" />
           </h1>
           <p style={{ fontSize: 14, color: "#6A6A6A" }}>
-            ទំព័រនេះសម្រាប់តែអ្នកត្រួតពិនិត្យបណ្ណសារប៉ុណ្ណោះ។ · This page is for archive reviewers only.
+            <T en="This page is for archive reviewers only." km="ទំព័រនេះសម្រាប់តែអ្នកត្រួតពិនិត្យបណ្ណសារប៉ុណ្ណោះ។" />
           </p>
         </div>
       </div>
@@ -111,7 +112,7 @@ export default async function ReviewPage() {
   }
 
   // Fetch pending entries oldest-first.
-  const { data: entries } = await supabase
+  const { data: entries, error: queueError } = await supabase
     .from("entries")
     .select(
       "id, title_en, title_km, era_en, location_en, year_en, description_en, description_km, image_url, contributor_en, created_at"
@@ -133,7 +134,7 @@ export default async function ReviewPage() {
               marginBottom: 10,
             }}
           >
-            ផ្ទាំងអ្នកត្រួតពិនិត្យ · Reviewer Dashboard
+            <T en="Reviewer Dashboard" km="ផ្ទាំងអ្នកត្រួតពិនិត្យ" />
           </p>
           <h1
             style={{
@@ -144,14 +145,24 @@ export default async function ReviewPage() {
               marginBottom: 10,
             }}
           >
-            ជួរពិនិត្យ · Review Queue
+            <T en="Review Queue" km="ជួរពិនិត្យ" />
           </h1>
           <p style={{ fontSize: 15, color: "#6A6A6A" }}>
-            សំណង់កំពុងរង់ចាំការសម្រេចរបស់អ្នក ចាស់ៗមុនគេ។ · Entries awaiting your decision, oldest first.
+            <T en="Entries awaiting your decision, oldest first." km="សំណង់កំពុងរង់ចាំការសម្រេចរបស់អ្នក ចាស់ៗមុនគេ។" />
           </p>
         </header>
 
-        <ReviewQueue initialEntries={entries || []} />
+        {queueError ? (
+          <p style={{ fontSize: 14, color: "#C62828", backgroundColor: "#FFF5F5", border: "1px solid #FFCDD2", borderRadius: 4, padding: "14px 16px" }}>
+            <T
+              en="Couldn't load the review queue. Check that supabase/review.sql was run in your Supabase project."
+              km="មិនអាចផ្ទុកជួរពិនិត្យបានទេ។ សូមពិនិត្យថា supabase/review.sql ត្រូវបានដំណើរការក្នុង Supabase។"
+            />
+            {" "}({queueError.message})
+          </p>
+        ) : (
+          <ReviewQueue initialEntries={entries || []} />
+        )}
       </div>
     </div>
   );

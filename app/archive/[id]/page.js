@@ -81,6 +81,9 @@ function DbEntryDetail({ id }) {
   // check below is how we find out when the database quietly said no.
   const isOwner = Boolean(userId && entry && userId === entry.owner);
 
+  // Show one language at a time; fall back if a Khmer/English field is empty.
+  const pick = (en, km) => (isKhmer ? km || en : en || km);
+
   const handleDelete = async () => {
     if (!window.confirm(isKhmer ? "លុបធាតុនេះ? វាមិនអាចត្រឡប់វិញ។" : "Delete this entry? This cannot be undone.")) return;
 
@@ -194,7 +197,7 @@ function DbEntryDetail({ id }) {
               marginBottom: 10,
             }}
           >
-            {[entry.era_en, entry.location_en, entry.year_en].filter(Boolean).join(" · ")}
+            {[pick(entry.era_en, entry.era_km), pick(entry.location_en, entry.location_km), pick(entry.year_en, entry.year_km)].filter(Boolean).join(" · ")}
           </p>
           <h1
             style={{
@@ -206,19 +209,8 @@ function DbEntryDetail({ id }) {
               marginBottom: 6,
             }}
           >
-            {entry.title_en}
+            {pick(entry.title_en, entry.title_km)}
           </h1>
-          {entry.title_km && (
-            <p
-              style={{
-                fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif",
-                fontSize: "clamp(20px, 3vw, 30px)",
-                color: "#6A6A6A",
-              }}
-            >
-              {entry.title_km}
-            </p>
-          )}
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 40 }}>
@@ -226,24 +218,24 @@ function DbEntryDetail({ id }) {
             <div style={{ overflow: "hidden", border: "1px solid #E5E0D8", backgroundColor: "#E2DDD5" }}>
               <img
                 src={entry.image_url}
-                alt={entry.title_en}
+                alt={pick(entry.title_en, entry.title_km) || ""}
                 style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
               />
             </div>
           )}
 
           <div>
-            {entry.description_en && (
+            {pick(entry.description_en, entry.description_km) && (
               <p style={{ fontFamily: "'Inter', 'Kantumruy Pro', sans-serif", fontSize: 16, color: INK, lineHeight: 1.8, marginBottom: 24 }}>
-                {entry.description_en}
+                {pick(entry.description_en, entry.description_km)}
               </p>
             )}
-            {entry.story_en && (
+            {pick(entry.story_en, entry.story_km) && (
               <p style={{ fontFamily: "'Inter', 'Kantumruy Pro', sans-serif", fontSize: 15, color: "#6A6A6A", lineHeight: 1.9 }}>
-                {entry.story_en}
+                {pick(entry.story_en, entry.story_km)}
               </p>
             )}
-            {entry.contributor_en && (
+            {pick(entry.contributor_en, entry.contributor_km) && (
               <p
                 style={{
                   marginTop: 28,
@@ -255,8 +247,7 @@ function DbEntryDetail({ id }) {
                 }}
               >
                 <span style={{ fontWeight: 600, color: INK }}>{isKhmer ? "រួមចំណែកដោយ" : "Contributed by"}</span>{" "}
-                {entry.contributor_en}
-                {entry.contributor_km ? ` · ${entry.contributor_km}` : ""}
+                {pick(entry.contributor_en, entry.contributor_km)}
               </p>
             )}
           </div>

@@ -33,7 +33,7 @@ export default function MyEntriesPage() {
     return () => { active = false; };
   }, [supabase]);
 
-  if (loading) return <div style={centerBox}>Loading…</div>;
+  if (loading) return <div style={centerBox}>{isKhmer ? "កំពុងផ្ទុក…" : "Loading…"}</div>;
   if (!user) {
     return (
       <div style={centerBox}>
@@ -49,10 +49,10 @@ export default function MyEntriesPage() {
 
   const getStatusText = (status) => {
     switch (status) {
-      case "published": return isKhmer ? "បានផ្សាយ (Published)" : "Published (បានផ្សាយ)";
-      case "returned": return isKhmer ? "ត្រូវបានត្រឡប់មកវិញ — សូមកែសម្រួល រួចដាក់ស្នើម្តងទៀត" : "Returned — please edit and save to resubmit";
+      case "published": return isKhmer ? "បានផ្សាយ" : "Published";
+      case "returned": return isKhmer ? "ត្រូវបានត្រឡប់មកវិញ — សូមកែសម្រួល រួចរក្សាទុកដើម្បីដាក់ស្នើម្តងទៀត" : "Returned — edit and save to resubmit";
       case "pending":
-      default: return isKhmer ? "កំពុងរង់ចាំការពិនិត្យ (Pending Review)" : "Pending Review (កំពុងរង់ចាំការពិនិត្យ)";
+      default: return isKhmer ? "កំពុងរង់ចាំការពិនិត្យ" : "Pending review";
     }
   };
 
@@ -85,14 +85,14 @@ export default function MyEntriesPage() {
               <div key={entry.id} style={{ backgroundColor: "#FFFFFF", border: "1px solid #E5E0D8", borderRadius: 4, padding: 24, display: "flex", flexDirection: "column", gap: 12 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
                   <div>
-                    <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, fontWeight: 700, color: INK, marginBottom: 4 }}>{entry.title_en} {entry.title_km ? `· ${entry.title_km}` : ""}</h2>
-                    <p style={{ fontSize: 13, color: "#8A8A8A" }}>{entry.era_en} · {entry.location_en} · {entry.year_en}</p>
+                    <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, fontWeight: 700, color: INK, marginBottom: 4 }}>{isKhmer ? (entry.title_km || entry.title_en) : entry.title_en}</h2>
+                    <p style={{ fontSize: 13, color: "#8A8A8A" }}>{(isKhmer ? [entry.era_km || entry.era_en, entry.location_km || entry.location_en, entry.year_km || entry.year_en] : [entry.era_en, entry.location_en, entry.year_en]).filter(Boolean).join(" · ")}</p>
                   </div>
                   <div style={{ padding: "6px 12px", borderRadius: 16, backgroundColor: "#F5F2EC", border: "1px solid #E5E0D8", fontSize: 12, fontWeight: 600, color: getStatusColor(entry.status), display: "inline-flex", alignItems: "center", gap: 6 }}>
                     <span>●</span> {getStatusText(entry.status)}
                   </div>
                 </div>
-                <p style={{ fontSize: 14, color: "#5A5A5A", lineHeight: 1.6 }}>{entry.description_en}</p>
+                <p style={{ fontSize: 14, color: "#5A5A5A", lineHeight: 1.6 }}>{isKhmer ? (entry.description_km || entry.description_en) : entry.description_en}</p>
                 <div style={{ display: "flex", gap: 12, paddingTop: 12, borderTop: "1px solid #F0EBE1" }}>
                   <Link href={`/archive/${entry.id}`} style={{ fontSize: 12, fontWeight: 600, color: INK, textDecoration: "underline" }}>{isKhmer ? "មើលព័ត៌មានលម្អិត" : "View Entry"}</Link>
                   <span style={{ color: "#D0C9BF" }}>|</span>

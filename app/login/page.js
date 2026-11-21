@@ -4,6 +4,7 @@ import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "../../lib/supabase/client.js";
+import { useLanguage } from "../../components/LanguageContext.js";
 
 // ── Palette (matches the archive: parchment, near-black, sandstone gold) ──
 const GOLD = "#C9A96E";
@@ -35,6 +36,7 @@ const inputStyle = {
 };
 
 function LoginForm() {
+  const { isKhmer } = useLanguage();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
@@ -66,7 +68,7 @@ function LoginForm() {
         // Deliberately generic: never reveal whether the email exists or
         // the password was wrong. Log the real cause for debugging only.
         console.error("Login failed:", signInError);
-        setError("Invalid email or password");
+        setError(isKhmer ? "អ៊ីមែល ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវ" : "Invalid email or password");
         setLoading(false);
         return;
       }
@@ -75,7 +77,7 @@ function LoginForm() {
       router.refresh();
     } catch (err) {
       console.error("Login error:", err);
-      setError("Invalid email or password");
+      setError(isKhmer ? "អ៊ីមែល ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវ" : "Invalid email or password");
       setLoading(false);
     }
   };
@@ -120,7 +122,7 @@ function LoginForm() {
             color: "#6A6A6A",
           }}
         >
-          ← Back
+          {isKhmer ? "← ត្រឡប់ក្រោយ" : "← Back"}
         </button>
 
         <div
@@ -145,7 +147,7 @@ function LoginForm() {
               textAlign: "center",
             }}
           >
-            Khmer Living Archive
+            {isKhmer ? "បណ្ណសាររស់នៃកម្ពុជា" : "Khmer Living Archive"}
           </p>
 
           <h1
@@ -159,7 +161,7 @@ function LoginForm() {
               textAlign: "center",
             }}
           >
-            Sign In
+            {isKhmer ? "ចូលគណនី" : "Sign In"}
           </h1>
 
           <p
@@ -172,7 +174,7 @@ function LoginForm() {
               textAlign: "center",
             }}
           >
-            Access contributor features and your archive entries.
+            {isKhmer ? "ចូលប្រើមុខងារអ្នករួមចំណែក និងសំណង់របស់អ្នក។" : "Access contributor features and your archive entries."}
           </p>
 
           {error && (
@@ -197,7 +199,7 @@ function LoginForm() {
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
             <div>
               <label htmlFor="login-email" style={labelStyle}>
-                Email Address
+                {isKhmer ? "អាសយដ្ឋានអ៊ីមែល" : "Email Address"}
               </label>
               <input
                 id="login-email"
@@ -213,7 +215,7 @@ function LoginForm() {
 
             <div>
               <label htmlFor="login-password" style={labelStyle}>
-                Password
+                {isKhmer ? "ពាក្យសម្ងាត់" : "Password"}
               </label>
               <input
                 id="login-password"
@@ -246,7 +248,7 @@ function LoginForm() {
                 opacity: loading ? 0.7 : 1,
               }}
             >
-              {loading ? "Signing in..." : "Sign In →"}
+              {loading ? (isKhmer ? "កំពុងចូលគណនី…" : "Signing in...") : (isKhmer ? "ចូលគណនី →" : "Sign In →")}
             </button>
           </form>
 
@@ -259,12 +261,12 @@ function LoginForm() {
               fontFamily: "'Inter', sans-serif",
             }}
           >
-            Don&apos;t have an account?{" "}
+            {isKhmer ? "មិនទាន់មានគណនីមែនទេ?" : "Don't have an account?"}{" "}
             <Link
               href={nextParam ? `/signup?next=${encodeURIComponent(redirectTo)}` : "/signup"}
               style={{ color: GOLD, fontWeight: 600, textDecoration: "underline" }}
             >
-              Create one
+              {isKhmer ? "បង្កើតគណនី" : "Create one"}
             </Link>
           </p>
         </div>

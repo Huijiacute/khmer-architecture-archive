@@ -261,3 +261,26 @@ button {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* ============================================================
+   Khmer mode (<html lang="km">, set by LanguageContext)
+   One font for every page, button, input and heading. Inline
+   styles in components set Inter / Cormorant, so !important is
+   needed here to override them.
+   ============================================================ */
+html:lang(km) *,
+html:lang(km) *::before,
+html:lang(km) *::after {
+  font-family: 'Kantumruy Pro', 'Khmer OS Battambang', 'Leelawadee UI', sans-serif !important;
+  /* Letter-spacing and uppercase break Khmer shaping and readability. */
+  letter-spacing: normal !important;
+  text-transform: none !important;
+  line-height: 1.8 !important; /* Khmer stacked marks need extra height */
+}
+
+html:lang(km) h1,
+html:lang(km) h2,
+html:lang(km) h3,
+html:lang(km) h4 {
+  line-height: 1.5 !important;
+}

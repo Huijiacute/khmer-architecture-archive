@@ -4,6 +4,7 @@ import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "../../lib/supabase/client.js";
+import { useLanguage } from "../../components/LanguageContext.js";
 
 // ── Palette (matches the archive: parchment, near-black, sandstone gold) ──
 const GOLD = "#C9A96E";
@@ -35,6 +36,7 @@ const inputStyle = {
 };
 
 function SignupForm() {
+  const { isKhmer } = useLanguage();
   const router = useRouter();
   const searchParams = useSearchParams();
   const supabaseConfigured =
@@ -63,16 +65,16 @@ function SignupForm() {
     setError("");
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError(isKhmer ? "ពាក្យសម្ងាត់មិនត្រូវគ្នាទេ" : "Passwords do not match");
       return;
     }
     if (password.length < 6) {
-      setError("Password must be at least 6 characters");
+      setError(isKhmer ? "ពាក្យសម្ងាត់ត្រូវមានយ៉ាងតិច ៦ តួអក្សរ" : "Password must be at least 6 characters");
       return;
     }
 
     if (!supabaseConfigured) {
-      setError("Sign-up is not available yet: Supabase is not configured.");
+      setError(isKhmer ? "ការចុះឈ្មោះមិនទាន់អាចប្រើបាន៖ មិនទាន់កំណត់ Supabase ទេ។" : "Sign-up is not available yet: Supabase is not configured.");
       return;
     }
 
@@ -82,7 +84,7 @@ function SignupForm() {
       const { error: signUpError } = await supabase.auth.signUp({ email, password });
 
       if (signUpError) {
-        setError(signUpError.message || "Failed to create account");
+        setError(isKhmer ? "មិនអាចបង្កើតគណនីបានទេ" : (signUpError.message || "Failed to create account"));
         setLoading(false);
         return;
       }
@@ -90,7 +92,7 @@ function SignupForm() {
       setSuccess(true);
       setLoading(false);
     } catch {
-      setError("Failed to create account. Please try again.");
+      setError(isKhmer ? "មិនអាចបង្កើតគណនីបានទេ។ សូមព្យាយាមម្តងទៀត។" : "Failed to create account. Please try again.");
       setLoading(false);
     }
   };
@@ -134,7 +136,7 @@ function SignupForm() {
             color: "#6A6A6A",
           }}
         >
-          ← Back
+          {isKhmer ? "← ត្រឡប់ក្រោយ" : "← Back"}
         </button>
 
         <div
@@ -159,7 +161,7 @@ function SignupForm() {
               textAlign: "center",
             }}
           >
-            Khmer Living Archive
+            {isKhmer ? "បណ្ណសាររស់នៃកម្ពុជា" : "Khmer Living Archive"}
           </p>
 
           <h1
@@ -173,7 +175,7 @@ function SignupForm() {
               textAlign: "center",
             }}
           >
-            Join the Archive
+            {isKhmer ? "ចូលរួមបណ្ណសារ" : "Join the Archive"}
           </h1>
 
           <p
@@ -186,7 +188,7 @@ function SignupForm() {
               textAlign: "center",
             }}
           >
-            Create a contributor account to document and submit entries.
+            {isKhmer ? "បង្កើតគណនីអ្នករួមចំណែក ដើម្បីចងក្រង និងដាក់ស្នើសំណង់។" : "Create a contributor account to document and submit entries."}
           </p>
 
           {error && (
@@ -224,10 +226,10 @@ function SignupForm() {
                 }}
               >
                 <p style={{ fontWeight: 700, color: "#9A7B33", marginBottom: 6 }}>
-                  Account created!
+                  {isKhmer ? "បានបង្កើតគណនីហើយ!" : "Account created!"}
                 </p>
                 <p style={{ fontSize: 13, color: "#6A6A6A" }}>
-                  Check your email to confirm, then sign in to begin contributing.
+                  {isKhmer ? "សូមពិនិត្យអ៊ីមែលរបស់អ្នកដើម្បីបញ្ជាក់ ហើយចូលគណនីដើម្បីចាប់ផ្តើមរួមចំណែក។" : "Check your email to confirm, then sign in to begin contributing."}
                 </p>
               </div>
 
@@ -246,14 +248,14 @@ function SignupForm() {
                   textTransform: "uppercase",
                 }}
               >
-                Go to Sign In →
+                {isKhmer ? "ទៅកាន់ការចូលគណនី →" : "Go to Sign In →"}
               </Link>
             </div>
           ) : (
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
               <div>
                 <label htmlFor="signup-email" style={labelStyle}>
-                  Email Address
+                  {isKhmer ? "អាសយដ្ឋានអ៊ីមែល" : "Email Address"}
                 </label>
                 <input
                   id="signup-email"
@@ -269,7 +271,7 @@ function SignupForm() {
 
               <div>
                 <label htmlFor="signup-password" style={labelStyle}>
-                  Password
+                  {isKhmer ? "ពាក្យសម្ងាត់" : "Password"}
                 </label>
                 <input
                   id="signup-password"
@@ -278,14 +280,14 @@ function SignupForm() {
                   autoComplete="new-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="At least 6 characters"
+                  placeholder={isKhmer ? "យ៉ាងតិច ៦ តួអក្សរ" : "At least 6 characters"}
                   style={inputStyle}
                 />
               </div>
 
               <div>
                 <label htmlFor="signup-confirm" style={labelStyle}>
-                  Confirm Password
+                  {isKhmer ? "បញ្ជាក់ពាក្យសម្ងាត់" : "Confirm Password"}
                 </label>
                 <input
                   id="signup-confirm"
@@ -294,7 +296,7 @@ function SignupForm() {
                   autoComplete="new-password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Re-enter password"
+                  placeholder={isKhmer ? "វាយពាក្យសម្ងាត់ម្តងទៀត" : "Re-enter password"}
                   style={inputStyle}
                 />
               </div>
@@ -318,7 +320,7 @@ function SignupForm() {
                   opacity: loading ? 0.7 : 1,
                 }}
               >
-                {loading ? "Creating account..." : "Create Account →"}
+                {loading ? (isKhmer ? "កំពុងបង្កើតគណនី…" : "Creating account...") : (isKhmer ? "បង្កើតគណនី →" : "Create Account →")}
               </button>
             </form>
           )}
@@ -332,12 +334,12 @@ function SignupForm() {
               fontFamily: "'Inter', sans-serif",
             }}
           >
-            Already have an account?{" "}
+            {isKhmer ? "មានគណនីរួចហើយ?" : "Already have an account?"}{" "}
             <Link
               href={loginHref}
               style={{ color: GOLD, fontWeight: 600, textDecoration: "underline" }}
             >
-              Sign in
+              {isKhmer ? "ចូលគណនី" : "Sign in"}
             </Link>
           </p>
         </div>

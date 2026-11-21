@@ -314,7 +314,7 @@ export default function ArchiveSection() {
 
           <Link
             href={addEntryHref}
-            aria-label="Add entry"
+            aria-label={isKhmer ? "បន្ថែមសំណង់" : "Add entry"}
             style={{
               fontFamily: "'Inter', 'Kantumruy Pro', sans-serif",
               fontSize: 11,
@@ -391,7 +391,7 @@ export default function ArchiveSection() {
               margin: "24px 0 48px",
             }}
           >
-            <div style={{ fontSize: 44, marginBottom: 16 }} role="img" aria-label="Loading">
+            <div style={{ fontSize: 44, marginBottom: 16 }} role="img" aria-label={isKhmer ? "កំពុងផ្ទុក" : "Loading"}>
               ⏳
             </div>
             <p style={{ fontFamily: "'Inter', 'Kantumruy Pro', sans-serif", fontSize: 14, color: "#5A5A5A", lineHeight: 1.8 }}>
@@ -412,7 +412,7 @@ export default function ArchiveSection() {
               margin: "24px 0 48px",
             }}
           >
-            <div style={{ fontSize: 44, marginBottom: 16 }} role="img" aria-label="Cambodian temple icon">
+            <div style={{ fontSize: 44, marginBottom: 16 }} role="img" aria-label={isKhmer ? "រូបតំណាងប្រាសាទកម្ពុជា" : "Cambodian temple icon"}>
               🏛️
             </div>
             <h3 style={{ fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif", fontSize: "clamp(24px, 3.5vw, 32px)", fontWeight: 700, color: "#1A1A1A", marginBottom: 12 }}>
@@ -466,7 +466,7 @@ export default function ArchiveSection() {
               margin: "24px 0 48px",
             }}
           >
-            <div style={{ fontSize: 44, marginBottom: 16 }} role="img" aria-label="Cambodian temple icon">
+            <div style={{ fontSize: 44, marginBottom: 16 }} role="img" aria-label={isKhmer ? "រូបតំណាងប្រាសាទកម្ពុជា" : "Cambodian temple icon"}>
               🏛️
             </div>
             <h3 style={{ fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif", fontSize: "clamp(24px, 3.5vw, 32px)", fontWeight: 700, color: "#1A1A1A", marginBottom: 12 }}>

@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useLanguage } from "./LanguageContext.js";
 import LanguageSwitcher from "./LanguageSwitcher.js";
 import NavSearch from "./NavSearch.js";
+import UserMenu from "./UserMenu.js";
 import { createClient } from "../lib/supabase/client.js";
 
 // Routes that render their own standalone, chrome-free layout.
@@ -13,7 +14,7 @@ const HIDDEN_ON = ["/login", "/signup"];
 
 export default function NavBar() {
   const pathname = usePathname();
-  const { t } = useLanguage();
+  const { t, isKhmer } = useLanguage();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
@@ -83,6 +84,20 @@ export default function NavBar() {
     { id: "archive", label: t("navArchive"), href: "/#archive" },
   ];
 
+  // Signed-in users get My Entries (and Review, for reviewers) right in the
+  // main bar so they don't have to hunt for them in the account menu.
+  const desktopLinks = [
+    ...navLinks,
+    ...(userEmail ? [{ id: "my-entries", label: isKhmer ? "សំណង់របស់ខ្ញុំ" : "My Entries", href: "/my-entries" }] : []),
+    ...(userEmail && isReviewer ? [{ id: "review", label: isKhmer ? "ជួរពិនិត្យ" : "Review", href: "/review" }] : []),
+  ];
+
+  // Section links are active only on the home page; page links by route.
+  const isActive = (link) =>
+    link.id === "my-entries" || link.id === "review"
+      ? pathname === link.href
+      : pathname === "/" && activeSection === link.id;
+
   const handleLinkClick = (id, e) => {
     setActiveSection(id);
     setMenuOpen(false);
@@ -117,17 +132,18 @@ export default function NavBar() {
         }}
       >
         {/* Desktop Nav */}
-        <nav style={{ display: "flex", alignItems: "center", gap: 24 }} aria-label={t("navAria")}>
-          <div className="desktop-links" style={{ display: "flex", alignItems: "center", gap: 24 }}>
-            {navLinks.map((link) => {
-              const active = activeSection === link.id;
+        <nav style={{ display: "flex", alignItems: "center", width: "100%", gap: 24 }} aria-label={t("navAria")}>
+          {/* Primary links (left) */}
+          <div className="desktop-links" style={{ display: "flex", alignItems: "center", gap: 28 }}>
+            {desktopLinks.map((link) => {
+              const active = isActive(link);
               return (
                 <a
                   key={link.id}
                   href={link.href}
                   onClick={(e) => handleLinkClick(link.id, e)}
                   style={{
-                    fontFamily: "'Inter', sans-serif",
+                    fontFamily: "'Inter', 'Kantumruy Pro', sans-serif",
                     fontSize: 11,
                     fontWeight: 600,
                     letterSpacing: "0.14em",
@@ -146,134 +162,55 @@ export default function NavBar() {
             })}
           </div>
 
-          {/* Auth: signed-in user or sign in / sign up links */}
-          <div className="desktop-links" style={{ display: "flex", alignItems: "center" }}>
-            <NavSearch />
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 16, marginLeft: 4 }}>
+          {/* Utilities + account (right): search, language, then Contribute / account */}
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginLeft: "auto" }}>
+            <div className="desktop-links" style={{ display: "flex", alignItems: "center" }}>
+              <NavSearch />
+            </div>
+            <LanguageSwitcher />
+
             {userEmail ? (
-              <>
-                <Link
-                  href="/my-entries"
-                  style={{
-                    fontFamily: "'Inter', sans-serif",
-                    fontSize: 11,
-                    fontWeight: 600,
-                    letterSpacing: "0.14em",
-                    textTransform: "uppercase",
-                    color: pathname === "/my-entries" ? "#1A1A1A" : "#8A8A8A",
-                    paddingBottom: 3,
-                    borderBottom:
-                      pathname === "/my-entries"
-                        ? "1.5px solid #C9A96E"
-                        : "1.5px solid transparent",
-                    textDecoration: "none",
-                    transition: "color 0.2s ease, border-color 0.2s ease",
-                  }}
-                >
-                  My Entries
-                </Link>
-                {isReviewer && (
-                  <Link
-                    href="/review"
-                    style={{
-                      fontFamily: "'Inter', sans-serif",
-                      fontSize: 11,
-                      fontWeight: 600,
-                      letterSpacing: "0.14em",
-                      textTransform: "uppercase",
-                      color: pathname === "/review" ? "#1A1A1A" : "#8A8A8A",
-                      paddingBottom: 3,
-                      borderBottom:
-                        pathname === "/review"
-                          ? "1.5px solid #C9A96E"
-                          : "1.5px solid transparent",
-                      textDecoration: "none",
-                      transition: "color 0.2s ease, border-color 0.2s ease",
-                    }}
-                  >
-                    Review
-                  </Link>
-                )}
+              <div className="desktop-links" style={{ display: "flex", alignItems: "center", gap: 12, paddingLeft: 12, borderLeft: "1px solid #E5E0D8" }}>
                 <Link
                   href="/contribute"
                   style={{
-                    fontFamily: "'Inter', sans-serif",
+                    fontFamily: "'Inter', 'Kantumruy Pro', sans-serif",
                     fontSize: 11,
-                    fontWeight: 600,
-                    letterSpacing: "0.14em",
+                    fontWeight: 700,
+                    letterSpacing: "0.12em",
                     textTransform: "uppercase",
-                    color: pathname === "/contribute" ? "#1A1A1A" : "#8A8A8A",
-                    paddingBottom: 3,
-                    borderBottom:
-                      pathname === "/contribute"
-                        ? "1.5px solid #C9A96E"
-                        : "1.5px solid transparent",
-                    textDecoration: "none",
-                    transition: "color 0.2s ease, border-color 0.2s ease",
-                  }}
-                >
-                  Contribute
-                </Link>
-                <span
-                  style={{
-                    fontFamily: "'Inter', sans-serif",
-                    fontSize: 11,
-                    fontWeight: 600,
                     color: "#1A1A1A",
-                    maxWidth: 180,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
+                    backgroundColor: "#C9A96E",
+                    padding: "10px 16px",
+                    borderRadius: 999,
+                    textDecoration: "none",
                     whiteSpace: "nowrap",
                   }}
-                  title={userEmail}
                 >
-                  {userEmail}
-                </span>
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  style={{
-                    background: "none",
-                    border: "1px solid #D5CFC5",
-                    borderRadius: 4,
-                    color: "#1A1A1A",
-                    padding: "7px 14px",
-                    fontSize: 11,
-                    fontFamily: "'Inter', sans-serif",
-                    fontWeight: 600,
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
-                    cursor: "pointer",
-                    transition: "border-color 0.2s ease, color 0.2s ease",
-                  }}
-                >
-                  Logout
-                </button>
-              </>
+                  {isKhmer ? "+ ចូលរួម" : "+ Contribute"}
+                </Link>
+                <UserMenu email={userEmail} isReviewer={isReviewer} onLogout={handleLogout} />
+              </div>
             ) : (
               <Link
                 href="/login"
                 style={{
-                  fontFamily: "'Inter', sans-serif",
+                  fontFamily: "'Inter', 'Kantumruy Pro', sans-serif",
                   fontSize: 11,
-                  fontWeight: 600,
-                  letterSpacing: "0.14em",
+                  fontWeight: 700,
+                  letterSpacing: "0.12em",
                   textTransform: "uppercase",
-                  color: "#1A1A1A",
-                  border: "1px solid #1A1A1A",
-                  padding: "7px 14px",
+                  color: "#FAFAF8",
+                  backgroundColor: "#1A1A1A",
+                  padding: "10px 18px",
+                  borderRadius: 999,
                   textDecoration: "none",
-                  transition: "border-color 0.2s ease, color 0.2s ease",
+                  whiteSpace: "nowrap",
                 }}
               >
-                Sign In
+                {isKhmer ? "ចូលគណនី" : "Sign In"}
               </Link>
             )}
-          </div>
-
-          <LanguageSwitcher />
-
           {/* Mobile hamburger button */}
           <button
             type="button"
@@ -295,6 +232,7 @@ export default function NavBar() {
           >
             {menuOpen ? "✕" : "☰"}
           </button>
+          </div>
         </nav>
       </div>
 
@@ -347,7 +285,7 @@ export default function NavBar() {
                   textDecoration: "none",
                 }}
               >
-                My Entries
+                {isKhmer ? "សំណង់របស់ខ្ញុំ" : "My Entries"}
               </Link>
               {isReviewer && (
                 <Link
@@ -364,7 +302,7 @@ export default function NavBar() {
                     textDecoration: "none",
                   }}
                 >
-                  Review
+                  {isKhmer ? "ជួរពិនិត្យ" : "Review"}
                 </Link>
               )}
               <Link
@@ -381,8 +319,20 @@ export default function NavBar() {
                   textDecoration: "none",
                 }}
               >
-                Contribute
+                {isKhmer ? "ដាក់ស្នើសំណង់" : "Contribute"}
               </Link>
+              <button
+                type="button"
+                onClick={() => { setMenuOpen(false); handleLogout(); }}
+                style={{
+                  marginTop: 8, padding: "12px 0", background: "none", border: "none",
+                  borderTop: "1px solid #E5E0D8", textAlign: "left", cursor: "pointer",
+                  fontFamily: "'Inter', 'Kantumruy Pro', sans-serif", fontSize: 13, fontWeight: 600,
+                  letterSpacing: "0.1em", textTransform: "uppercase", color: "#8A3B3B",
+                }}
+              >
+                {isKhmer ? "ចាកចេញ" : "Log out"} · {userEmail}
+              </button>
             </>
           )}
         </div>

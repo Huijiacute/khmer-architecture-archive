@@ -12,6 +12,7 @@ export default function NavSearch({ fullWidth = false, onDone }) {
   const pathname = usePathname();
   const router = useRouter();
   const [value, setValue] = useState("");
+  const [focused, setFocused] = useState(false);
 
   const label = isKhmer ? "ស្វែងរកក្នុងបណ្ណសារ" : "Search the archive";
 
@@ -33,44 +34,59 @@ export default function NavSearch({ fullWidth = false, onDone }) {
     <form
       role="search"
       onSubmit={submit}
-      style={{ display: "flex", width: fullWidth ? "100%" : "auto" }}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
+        width: fullWidth ? "100%" : focused || value ? 220 : 170,
+        padding: "0 12px",
+        height: 34,
+        boxSizing: "border-box",
+        backgroundColor: "#FFFFFF",
+        border: `1px solid ${focused ? "#C9A96E" : "#E5E0D8"}`,
+        borderRadius: 999,
+        transition: "width 0.25s ease, border-color 0.2s ease",
+      }}
     >
-      <input
-        type="search"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        placeholder={isKhmer ? "ស្វែងរក..." : "Search..."}
-        aria-label={label}
-        style={{
-          width: fullWidth ? "100%" : 170,
-          padding: "7px 12px",
-          border: "1px solid #D5CFC5",
-          borderRight: "none",
-          borderRadius: "4px 0 0 4px",
-          backgroundColor: "#FFFFFF",
-          color: "#1A1A1A",
-          fontSize: 12,
-          fontFamily: "'Inter', 'Kantumruy Pro', sans-serif",
-          outline: "none",
-          boxSizing: "border-box",
-        }}
-      />
       <button
         type="submit"
         aria-label={label}
         style={{
-          padding: "7px 12px",
-          border: "1px solid #1A1A1A",
-          borderRadius: "0 4px 4px 0",
-          backgroundColor: "#1A1A1A",
-          color: "#FAFAF8",
-          fontSize: 13,
+          display: "flex",
+          alignItems: "center",
+          padding: 0,
+          border: "none",
+          background: "none",
+          color: focused ? "#1A1A1A" : "#8A8A8A",
           cursor: "pointer",
-          lineHeight: 1,
+          transition: "color 0.2s ease",
         }}
       >
-        🔍
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" />
+          <line x1="16.5" y1="16.5" x2="21" y2="21" />
+        </svg>
       </button>
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        placeholder={isKhmer ? "ស្វែងរក" : "Search"}
+        aria-label={label}
+        style={{
+          flex: 1,
+          minWidth: 0,
+          border: "none",
+          outline: "none",
+          background: "transparent",
+          color: "#1A1A1A",
+          fontSize: 12,
+          fontFamily: "'Inter', 'Kantumruy Pro', sans-serif",
+          letterSpacing: "0.02em",
+        }}
+      />
     </form>
   );
 }

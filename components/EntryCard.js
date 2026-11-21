@@ -36,7 +36,7 @@ export default function EntryCard({
   const dStory = isKm ? (storyKm || storyEn || story) : (storyEn || story || storyKm);
   const dContributor = isKm ? (contributorKm || contributorEn || contributor) : (contributorEn || contributor || contributorKm);
   const dPlaces = (isKm ? (placesKm || placesEn || places) : (placesEn || places || placesKm)) || [];
-  const dActionText = actionText;
+  const dActionText = t("viewDetailed");
 
   const metaLabel = {
     fontFamily: "'Inter', sans-serif",

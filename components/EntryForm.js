@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useLanguage } from "./LanguageContext.js";
 
 // ── Shared entry form (used by /contribute and /archive/[id]/edit) ──
 // Same fields, same validation rules in one place so both pages stay
@@ -54,19 +55,20 @@ function fieldStyle(hasError) {
   };
 }
 
+// Every visible string is an [English, Khmer] pair so each language shows one language only.
 const TEXT_FIELDS = [
-  { id: "title_en", label: "Title (English)", required: true, hint: "The landmark's name in English." },
-  { id: "title_km", label: "Title (ខ្មែរ)", required: true, hint: "ឈ្មោះសំណង់ជាភាសាខ្មែរ." },
-  { id: "era_en", label: "Era", required: true, hint: "e.g. Angkorian, New Khmer, Contemporary." },
-  { id: "location_en", label: "Province / Location", required: true, hint: "Where the landmark stands." },
-  { id: "year_en", label: "Year Built", required: true, hint: "Year, or year/month/day." },
-  { id: "contributor_en", label: "Credit / Contributor name", required: true, hint: "Who to credit for this entry (your name or source)." },
-  { id: "contributor_km", label: "Credit (ខ្មែរ)", required: false, hint: "ឈ្មោះអ្នករួមចំណែក (ជាភាសាខ្មែរ) — ស្រេចចិត្ត." },
+  { id: "title_en", label: ["Title (English)", "ចំណងជើង (អង់គ្លេស)"], required: true, hint: ["The landmark's name in English.", "ឈ្មោះសំណង់ជាភាសាអង់គ្លេស។"] },
+  { id: "title_km", label: ["Title (Khmer)", "ចំណងជើង (ខ្មែរ)"], required: true, hint: ["The landmark's name in Khmer.", "ឈ្មោះសំណង់ជាភាសាខ្មែរ។"] },
+  { id: "era_en", label: ["Era", "សម័យកាល"], required: true, hint: ["e.g. Angkorian, New Khmer, Contemporary.", "ឧ. សម័យអង្គរ សម័យខ្មែរថ្មី សម័យបច្ចុប្បន្ន។"] },
+  { id: "location_en", label: ["Province / Location", "ខេត្ត / ទីតាំង"], required: true, hint: ["Where the landmark stands.", "កន្លែងដែលសំណង់ស្ថិតនៅ។"] },
+  { id: "year_en", label: ["Year Built", "ឆ្នាំសាងសង់"], required: true, hint: ["Year, or year/month/day.", "ឆ្នាំ ឬ ឆ្នាំ/ខែ/ថ្ងៃ។"] },
+  { id: "contributor_en", label: ["Credit / Contributor name", "ឈ្មោះអ្នករួមចំណែក"], required: true, hint: ["Who to credit for this entry (your name or source).", "អ្នកដែលត្រូវផ្តល់កិត្តិយសសម្រាប់សំណង់នេះ (ឈ្មោះរបស់អ្នក ឬប្រភព)។"] },
+  { id: "contributor_km", label: ["Credit (Khmer)", "ឈ្មោះអ្នករួមចំណែក (ខ្មែរ)"], required: false, hint: ["Optional. Credit in Khmer.", "ស្រេចចិត្ត។ ឈ្មោះអ្នករួមចំណែកជាភាសាខ្មែរ។"] },
 ];
 
 const TEXTAREA_FIELDS = [
-  { id: "description_en", label: "Description", required: true, hint: "Required. Max 150 words." },
-  { id: "story_en", label: "Story", required: false, hint: "Optional. Max 200 words." },
+  { id: "description_en", label: ["Description", "ការពិពណ៌នា"], required: true, hint: ["Required. Max 150 words.", "ត្រូវការ។ អតិបរមា ១៥០ ពាក្យ។"] },
+  { id: "story_en", label: ["Story", "រឿងរ៉ាវ"], required: false, hint: ["Optional. Max 200 words.", "ស្រេចចិត្ត។ អតិបរមា ២០០ ពាក្យ។"] },
 ];
 
 const EMPTY = { title_en: "", title_km: "", era_en: "", location_en: "", year_en: "", description_en: "", story_en: "", contributor_en: "", contributor_km: "" };
@@ -76,30 +78,34 @@ export default function EntryForm({
   requirePhoto = true, // contribute requires a photo; edit keeps the old one
   submitLabel = "Submit entry →",
   status = "",
+  statusIsError = false,
   submitting = false,
   onSubmit,
 }) {
+  const { isKhmer } = useLanguage();
+  const L = (pair) => (isKhmer ? pair[1] : pair[0]);
+  const REQ = isKhmer ? "ត្រូវការ" : "Required";
   const [formData, setFormData] = useState({ ...EMPTY, ...initialValues });
   const [file, setFile] = useState(null);
   const [errors, setErrors] = useState({});
 
   const validate = () => {
     const e = {};
-    if (!formData.title_en.trim()) e.title_en = "Required";
-    if (!formData.title_km.trim()) e.title_km = "Required";
-    if (!formData.era_en.trim()) e.era_en = "Required";
-    if (!formData.location_en.trim()) e.location_en = "Required";
-    if (!formData.year_en.trim()) e.year_en = "Required";
-    if (!formData.contributor_en.trim()) e.contributor_en = "Required";
-    if (!formData.description_en.trim()) e.description_en = "Required";
-    else if (formData.description_en.trim().split(/\s+/).length > 150) e.description_en = "Max 150 words";
-    if (formData.story_en.trim() && formData.story_en.trim().split(/\s+/).length > 200) e.story_en = "Max 200 words";
+    if (!formData.title_en.trim()) e.title_en = REQ;
+    if (!formData.title_km.trim()) e.title_km = REQ;
+    if (!formData.era_en.trim()) e.era_en = REQ;
+    if (!formData.location_en.trim()) e.location_en = REQ;
+    if (!formData.year_en.trim()) e.year_en = REQ;
+    if (!formData.contributor_en.trim()) e.contributor_en = REQ;
+    if (!formData.description_en.trim()) e.description_en = REQ;
+    else if (formData.description_en.trim().split(/\s+/).length > 150) e.description_en = isKhmer ? "អតិបរមា ១៥០ ពាក្យ" : "Max 150 words";
+    if (formData.story_en.trim() && formData.story_en.trim().split(/\s+/).length > 200) e.story_en = isKhmer ? "អតិបរមា ២០០ ពាក្យ" : "Max 200 words";
 
     // Photo: required on contribute, optional on edit. When a file IS picked
     // (either mode), it must still be a valid image within the size limit.
-    if (requirePhoto && !file) e.file = "Required";
-    else if (file && !["image/jpeg", "image/png"].includes(file.type)) e.file = "JPG or PNG only";
-    else if (file && file.size > 10 * 1024 * 1024) e.file = "Max 10MB";
+    if (requirePhoto && !file) e.file = REQ;
+    else if (file && !["image/jpeg", "image/png"].includes(file.type)) e.file = isKhmer ? "ទទួលតែ JPG ឬ PNG" : "JPG or PNG only";
+    else if (file && file.size > 10 * 1024 * 1024) e.file = isKhmer ? "អតិបរមា ១០MB" : "Max 10MB";
 
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -134,7 +140,7 @@ export default function EntryForm({
         {TEXT_FIELDS.map(({ id, label, required, hint }) => (
           <div key={id}>
             <label htmlFor={id} style={labelStyle}>
-              {label}{required && <span style={requiredMark}>*</span>}
+              {L(label)}{required && <span style={requiredMark}>*</span>}
             </label>
             <input
               id={id}
@@ -146,14 +152,14 @@ export default function EntryForm({
             />
             {errors[id]
               ? <div style={errorStyle}>{errors[id]}</div>
-              : <div id={`${id}-hint`} style={hintStyle}>{hint}</div>}
+              : <div id={`${id}-hint`} style={hintStyle}>{L(hint)}</div>}
           </div>
         ))}
 
         {TEXTAREA_FIELDS.map(({ id, label, required, hint }) => (
           <div key={id}>
             <label htmlFor={id} style={labelStyle}>
-              {label}{required && <span style={requiredMark}>*</span>}
+              {L(label)}{required && <span style={requiredMark}>*</span>}
             </label>
             <textarea
               id={id}
@@ -166,14 +172,14 @@ export default function EntryForm({
             />
             {errors[id]
               ? <div style={errorStyle}>{errors[id]}</div>
-              : <div id={`${id}-hint`} style={hintStyle}>{hint}</div>}
+              : <div id={`${id}-hint`} style={hintStyle}>{L(hint)}</div>}
           </div>
         ))}
 
         {/* ── Photo picker ── */}
         <div>
           <label htmlFor="photo" style={labelStyle}>
-            Photo{requirePhoto && <span style={requiredMark}>*</span>}
+            {isKhmer ? "រូបថត" : "Photo"}{requirePhoto && <span style={requiredMark}>*</span>}
           </label>
           <label
             htmlFor="photo"
@@ -184,10 +190,10 @@ export default function EntryForm({
             }}
           >
             <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: INK, backgroundColor: "#EAE5DB", padding: "8px 14px", borderRadius: 2, flexShrink: 0 }}>
-              Choose photo
+              {isKhmer ? "ជ្រើសរើសរូបថត" : "Choose photo"}
             </span>
             <span style={{ fontFamily: "'Inter', 'Kantumruy Pro', sans-serif", fontSize: 13, color: fileName ? INK : "#9A9A8E", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-              {fileName || "No file selected"}
+              {fileName || (isKhmer ? "មិនទាន់ជ្រើសរើសឯកសារ" : "No file selected")}
             </span>
           </label>
           <input
@@ -199,7 +205,9 @@ export default function EntryForm({
           />
           {errors.file
             ? <div style={errorStyle}>{errors.file}</div>
-            : <div style={hintStyle}>{requirePhoto ? "Required. JPG or PNG, max 10MB." : "Optional. Leave empty to keep the current photo. JPG or PNG, max 10MB."}</div>}
+            : <div style={hintStyle}>{requirePhoto
+              ? (isKhmer ? "ត្រូវការ។ JPG ឬ PNG អតិបរមា ១០MB។" : "Required. JPG or PNG, max 10MB.")
+              : (isKhmer ? "ស្រេចចិត្ត។ ទុកទទេដើម្បីរក្សារូបថតបច្ចុប្បន្ន។ JPG ឬ PNG អតិបរមា ១០MB។" : "Optional. Leave empty to keep the current photo. JPG or PNG, max 10MB.")}</div>}
         </div>
 
         {/* ── Submit ── */}
@@ -213,7 +221,7 @@ export default function EntryForm({
             cursor: submitting ? "not-allowed" : "pointer", transition: "background-color 0.2s ease",
           }}
         >
-          {submitting ? (status || "Saving…") : submitLabel}
+          {submitting ? (status || (isKhmer ? "កំពុងរក្សាទុក…" : "Saving…")) : submitLabel}
         </button>
 
         {status && (
@@ -221,7 +229,7 @@ export default function EntryForm({
             role="status"
             style={{
               fontFamily: "'Inter', 'Kantumruy Pro', sans-serif", fontSize: 13, textAlign: "center",
-              color: status.startsWith("Failed") || status.startsWith("That change") ? "#B4452F" : "#6A6A6A",
+              color: statusIsError ? "#B4452F" : "#6A6A6A",
             }}
           >
             {status}
