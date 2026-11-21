@@ -1,0 +1,40 @@
+
+> khmer-living-archive@0.1.0 dev
+> next dev
+
+   ▲ Next.js 15.5.25
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.11.1:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 6.7s
+ ○ Compiling /middleware ...
+ ✓ Compiled /middleware in 3.3s (173 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (113kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (267kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
+ ○ Compiling / ...
+ ✓ Compiled / in 14.7s (743 modules)
+ GET / 200 in 16966ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 2.9s (734 modules)
+ GET /explore 404 in 3475ms
+ GET /explore?q=Angkor 404 in 149ms
+ ○ Compiling /my-entries ...
+ ✓ Compiled /my-entries in 913ms (741 modules)
+ GET /my-entries 200 in 1666ms
+ GET / 200 in 245ms
+ GET / 200 in 137ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ✓ Compiled in 1939ms (733 modules)
+ GET / 200 in 844ms
+ ✓ Compiled in 1235ms (733 modules)
+ ✓ Compiled in 273ms (733 modules)
+ GET / 200 in 199ms
+ GET /?q=Bayon 200 in 48ms
+ ✓ Compiled /my-entries in 160ms (442 modules)
+ GET /my-entries 200 in 312ms
+ ✓ Compiled /contribute in 313ms (747 modules)
+ GET /contribute 200 in 517ms
+ GET / 200 in 67ms
+ GET /?q=Bayon 200 in 49ms

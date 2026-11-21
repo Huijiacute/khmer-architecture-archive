@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLanguage } from "./LanguageContext.js";
 import LanguageSwitcher from "./LanguageSwitcher.js";
+import NavSearch from "./NavSearch.js";
 import { createClient } from "../lib/supabase/client.js";
 
 // Routes that render their own standalone, chrome-free layout.
@@ -146,6 +147,9 @@ export default function NavBar() {
           </div>
 
           {/* Auth: signed-in user or sign in / sign up links */}
+          <div className="desktop-links" style={{ display: "flex", alignItems: "center" }}>
+            <NavSearch />
+          </div>
           <div style={{ display: "flex", alignItems: "center", gap: 16, marginLeft: 4 }}>
             {userEmail ? (
               <>
@@ -306,6 +310,7 @@ export default function NavBar() {
             gap: 14,
           }}
         >
+          <NavSearch fullWidth onDone={() => setMenuOpen(false)} />
           {navLinks.map((link) => (
             <a
               key={link.id}

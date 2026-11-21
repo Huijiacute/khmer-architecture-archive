@@ -68,6 +68,18 @@ export default function ArchiveSection() {
   // memoized instance avoids that.
   const supabase = useMemo(() => createClient(), []);
 
+  // Queries sent from the top navigation search box: either in the URL
+  // (/?q=...) after navigating here, or as an event when already on this page.
+  useEffect(() => {
+    const fromUrl = new URLSearchParams(window.location.search).get("q");
+    if (fromUrl) {
+      setSearchQuery(fromUrl.normalize("NFC"));
+      setTimeout(() => document.getElementById("archive")?.scrollIntoView({ behavior: "smooth" }), 300);
+    }
+    const onNavSearch = (e) => setSearchQuery(String(e.detail || ""));
+    window.addEventListener("archive-search", onNavSearch);
+    return () => window.removeEventListener("archive-search", onNavSearch);
+  }, []);
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       setIsSignedIn(!!data.session);
