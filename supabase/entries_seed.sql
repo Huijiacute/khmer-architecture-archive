@@ -94,7 +94,7 @@ values
    array['Norodom & Sihanouk Boulevard Intersection', 'Suramarit Park'],
    array['ប្រសព្វមហាវិថីនរោត្តម និងសីហនុ', 'សួនច្បារសុរាម្រឹត'],
    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
-   '/archive/3'),
+   null),
 
   ('38bd1090-9bd0-43f0-8de8-bca9a5ce9470',
    'Olympic Stadium Complex',
@@ -114,4 +114,4 @@ values
    array['Indoor Sports Arena', 'Aquatic Diving Complex', 'Moat Catchment Reservoirs'],
    array['សាលកីឡាក្នុងផ្ទះ', 'អាងហែលទឹក និងលោតទឹក', 'អាងស្តុកទឹកភ្លៀង'],
    'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80',
-   '/archive/5');
+   null);

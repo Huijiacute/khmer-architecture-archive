@@ -73,3 +73,37 @@ https://nextjs.org/docs/messages/module-not-found
  ✓ Compiled in 898ms (832 modules)
  ✓ Compiled in 551ms (832 modules)
  GET / 200 in 243ms
+ GET /archive/7 200 in 86ms
+ GET / 200 in 27ms
+ GET / 200 in 101ms
+ GET /archive/7 200 in 35ms
+ GET /archive/3 200 in 37ms
+ GET / 200 in 23ms
+ ○ Compiling /archive/ifl ...
+ ✓ Compiled /archive/ifl in 705ms (837 modules)
+ GET /archive/ifl 200 in 854ms
+ GET /archive/3 200 in 47ms
+ GET / 200 in 709ms
+ GET / 200 in 210ms
+ ✓ Compiled in 1648ms (833 modules)
+ ○ Compiling /archive/french ...
+ ✓ Compiled /archive/french in 964ms (838 modules)
+ GET /archive/french 200 in 1665ms
+ ✓ Compiled /archive/ifl in 393ms (530 modules)
+ GET /archive/ifl 200 in 924ms
+ ○ Compiling /archive/iispp ...
+ ✓ Compiled /archive/iispp in 735ms (847 modules)
+ GET /archive/iispp 200 in 1189ms
+ GET /archive/ifl 200 in 153ms
+ GET /archive/iispp 200 in 105ms
+ GET /archive/french 200 in 165ms
+ ✓ Compiled in 1367ms (847 modules)
+ GET /archive/french 200 in 513ms
+ GET /archive/ifl 200 in 215ms
+ ✓ Compiled in 1871ms (773 modules)
+ GET /archive/ifl 200 in 1231ms
+ GET /archive/iispp 200 in 287ms
+ GET /archive/french 200 in 264ms
+ GET /archive/2 200 in 291ms
+ GET /archive/3 200 in 206ms
+ GET /archive/1 200 in 235ms

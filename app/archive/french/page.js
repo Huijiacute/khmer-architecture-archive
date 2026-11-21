@@ -4,11 +4,14 @@ import Link from "next/link";
 import { useLanguage } from "../../../components/LanguageContext.js";
 
 const frenchImages = [
-  { src: "/France_main.JPG", label: "France_main", title: "Main Department Entrance & Exterior Facade" },
-  { src: "/france.JPG", label: "franc", title: "Department Courtyard & Covered Walkways" },
-  { src: "/france_1.JPG", label: "france_1", title: "Classroom Wings & Architectural Shadows" },
-  { src: "/france_2.JPG", label: "france_2", title: "Brise-Soleil Structural Geometry" },
+  { src: "/France_main.JPG", label: "France_main", title: "Main Department Entrance & Exterior Facade", titleKm: "ច្រកចូលចម្បងនៃដេប៉ាតឺម៉ង់ និងផ្នែកខាងមុខ" },
+  { src: "/france.JPG", label: "franc", title: "Department Courtyard & Covered Walkways", titleKm: "ទីធ្លាដេប៉ាតឺម៉ង់ និងផ្លូវដើរមានដំបូល" },
+  { src: "/france_1.JPG", label: "france_1", title: "Classroom Wings & Architectural Shadows", titleKm: "ស្លាបអាគារសិក្សា និងស្រមោលស្ថាបត្យកម្ម" },
+  { src: "/france_2.JPG", label: "france_2", title: "Brise-Soleil Structural Geometry", titleKm: "ធរណីមាត្រនៃរចនាសម្ព័ន្ធបាំងពន្លឺថ្ងៃ" },
 ];
+
+// Khmer numerals for the "Photo X of N" label.
+const khDigits = (n) => String(n).replace(/\d/g, (d) => "០១២៣៤៥៦៧៨៩"[d]);
 
 export default function FrenchDetailPage() {
   const { isKhmer } = useLanguage();
@@ -54,8 +57,8 @@ export default function FrenchDetailPage() {
           </h1>
           <p style={{ fontSize: 15, color: "#6A6A6A", maxWidth: 760, lineHeight: 1.8 }}>
             {isKhmer
-              ? "ការប្រមូលផ្តុំរូបភាពស្ថាបត្យកម្មនៃដេប៉ាតឺម៉ង់ភាសាបារាំង (France_main, franc, france_1, france_2) ក្នុងបរិវេណវិទ្យាស្ថានភាសាបរទេស។"
-              : "A photographic collection of the Department of French campus building (France_main, franc, france_1, and france_2) at the Institute of Foreign Languages."}
+              ? "ការប្រមូលផ្តុំរូបភាពស្ថាបត្យកម្មនៃដេប៉ាតឺម៉ង់ភាសាបារាំង ក្នុងបរិវេណវិទ្យាស្ថានភាសាបរទេស។"
+              : "A photographic collection of the Department of French campus building at the Institute of Foreign Languages."}
           </p>
         </div>
 
@@ -75,32 +78,16 @@ export default function FrenchDetailPage() {
               <div style={{ width: "100%", height: 320, overflow: "hidden", backgroundColor: "#E2DDD5", position: "relative" }}>
                 <img
                   src={img.src}
-                  alt={img.label}
+                  alt={isKhmer ? img.titleKm : img.title}
                   style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                 />
-                <span
-                  style={{
-                    position: "absolute",
-                    top: 14,
-                    left: 14,
-                    backgroundColor: "rgba(26, 26, 26, 0.8)",
-                    color: "#FFFFFF",
-                    fontFamily: "'Inter', sans-serif",
-                    fontSize: 11,
-                    fontWeight: 700,
-                    letterSpacing: "0.12em",
-                    padding: "4px 10px",
-                  }}
-                >
-                  {img.label}
-                </span>
               </div>
               <div style={{ padding: "18px 22px" }}>
                 <p style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", color: "#C9A96E", marginBottom: 4 }}>
-                  Photo {idx + 1} of {frenchImages.length}
+                  {isKhmer ? `រូបភាពទី ${khDigits(idx + 1)} ក្នុងចំណោម ${khDigits(frenchImages.length)}` : `Photo ${idx + 1} of ${frenchImages.length}`}
                 </p>
                 <h3 style={{ fontFamily: "'Cormorant Garamond', 'Kantumruy Pro', serif", fontSize: 20, fontWeight: 700, color: "#1A1A1A" }}>
-                  {img.title}
+                  {isKhmer ? img.titleKm : img.title}
                 </h3>
               </div>
             </div>
