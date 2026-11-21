@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useLanguage } from "./LanguageContext.js";
+import DeleteEntryButton from "./DeleteEntryButton.js";
 
 export default function EntryCard({
   title,
@@ -25,6 +26,9 @@ export default function EntryCard({
   imageUrl,
   actionHref,
   actionText,
+  entryId,
+  canDelete = false,
+  onDeleted,
 }) {
   const { language, t } = useLanguage();
   const isKm = language === "km";
@@ -129,11 +133,14 @@ export default function EntryCard({
               </div>
             )}
           </div>
-          {actionHref && (
-            <Link href={actionHref} className="btn-primary" style={{ alignSelf: "flex-end" }}>
-              {dActionText}
-            </Link>
-          )}
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", gap: 12 }}>
+            {canDelete && <DeleteEntryButton id={entryId} onDeleted={onDeleted} />}
+            {actionHref && (
+              <Link href={actionHref} className="btn-primary" style={{ alignSelf: "flex-end" }}>
+                {dActionText}
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     </article>

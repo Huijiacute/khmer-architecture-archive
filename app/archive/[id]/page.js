@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "../../../lib/supabase/client.js";
 import { useLanguage } from "../../../components/LanguageContext.js";
+import ConfirmDialog from "../../../components/ConfirmDialog.js";
 import IFLDetailPage from "../ifl/page.js";
 import IISPPDetailPage from "../iispp/page.js";
 import FrenchDetailPage from "../french/page.js";
@@ -44,6 +45,8 @@ function DbEntryDetail({ id }) {
   const [state, setState] = useState("loading"); // loading | ready | missing | error
   const [deleting, setDeleting] = useState(false);
   const [actionError, setActionError] = useState("");
+  const [isReviewer, setIsReviewer] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -58,6 +61,10 @@ function DbEntryDetail({ id }) {
       if (!active) return;
 
       setUserId(userData?.user?.id || null);
+      if (userData?.user) {
+        const { data: rev } = await supabase.rpc("is_reviewer");
+        if (active) setIsReviewer(rev === true);
+      }
 
       if (error) {
         setState("error");
@@ -80,13 +87,14 @@ function DbEntryDetail({ id }) {
   // on the entries table (owners delete/edit their own). The .select() row
   // check below is how we find out when the database quietly said no.
   const isOwner = Boolean(userId && entry && userId === entry.owner);
+  // Owners and reviewers see Delete. Again only a display choice: the
+  // database delete policy ("owners or reviewers delete entries") enforces it.
+  const canDelete = isOwner || isReviewer;
 
   // Show one language at a time; fall back if a Khmer/English field is empty.
   const pick = (en, km) => (isKhmer ? km || en : en || km);
 
   const handleDelete = async () => {
-    if (!window.confirm(isKhmer ? "លុបធាតុនេះ? វាមិនអាចត្រឡប់វិញ។" : "Delete this entry? This cannot be undone.")) return;
-
     setDeleting(true);
     setActionError("");
     const supabase = createClient();
@@ -101,14 +109,16 @@ function DbEntryDetail({ id }) {
 
     if (error) {
       console.error(error);
-      setActionError(isKhmer ? "ការផ្លាស់ប្តូរនេះមិនបានរក្សាទុក។" : "That change wasn't saved");
+      setActionError(isKhmer ? "មិនអាចលុបសំណង់នេះបានទេ។ សូមព្យាយាមម្តងទៀត។" : "Couldn't delete this entry. Please try again.");
+      setConfirmOpen(false);
       setDeleting(false);
       return;
     }
 
     if (!data || data.length === 0) {
       console.error("Delete affected zero rows (likely blocked by RLS).");
-      setActionError(isKhmer ? "ការផ្លាស់ប្តូរនេះមិនបានរក្សាទុក។" : "That change wasn't saved");
+      setActionError(isKhmer ? "មិនអាចលុបសំណង់នេះបានទេ។ សូមព្យាយាមម្តងទៀត។" : "Couldn't delete this entry. Please try again.");
+      setConfirmOpen(false);
       setDeleting(false);
       return;
     }
@@ -144,10 +154,11 @@ function DbEntryDetail({ id }) {
             ← {isKhmer ? "ត្រឡប់ទៅបណ្ណសារ" : "Back to Archive"}
           </Link>
 
-          {/* Owner-only controls. Hidden for everyone else as a courtesy;
-              the database policies are what actually enforce ownership. */}
-          {isOwner && (
+          {/* Edit is owner-only; Delete is for the owner or a reviewer. Hidden for
+              everyone else as a courtesy; the database policies enforce it. */}
+          {(isOwner || canDelete) && (
             <div style={{ display: "flex", gap: 10 }}>
+              {isOwner && (
               <Link
                 href={`/archive/${id}/edit`}
                 style={{
@@ -157,9 +168,11 @@ function DbEntryDetail({ id }) {
               >
                 {isKhmer ? "កែសម្រួល" : "Edit"}
               </Link>
+              )}
+              {canDelete && (
               <button
                 type="button"
-                onClick={handleDelete}
+                onClick={() => { setActionError(""); setConfirmOpen(true); }}
                 disabled={deleting}
                 style={{
                   padding: "10px 20px", backgroundColor: "#FFFFFF", color: "#B4452F",
@@ -167,8 +180,9 @@ function DbEntryDetail({ id }) {
                   fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase",
                 }}
               >
-                {deleting ? (isKhmer ? "កំពុងលុប…" : "Deleting…") : (isKhmer ? "លុប" : "Delete")}
+                {isKhmer ? "លុប" : "Delete"}
               </button>
+              )}
             </div>
           )}
         </div>
@@ -253,6 +267,17 @@ function DbEntryDetail({ id }) {
           </div>
         </div>
       </div>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        title={isKhmer ? "លុបសំណង់នេះមែនទេ?" : "Delete this entry?"}
+        itemName={pick(entry.title_en, entry.title_km)}
+        message={isKhmer ? "សំណង់នេះនឹងត្រូវលុបជាអចិន្ត្រៃយ៍ ហើយមិនអាចយកមកវិញបានទេ។" : "This will permanently remove the entry from the archive. This cannot be undone."}
+        confirmLabel={isKhmer ? "លុបជាអចិន្ត្រៃយ៍" : "Delete permanently"}
+        busy={deleting}
+        onConfirm={handleDelete}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </div>
   );
 }

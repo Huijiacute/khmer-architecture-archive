@@ -1,5 +1,6 @@
 import { createClient } from "../../lib/supabase/server.js";
 import ReviewQueue from "../../components/ReviewQueue.js";
+import PublishedList from "../../components/PublishedList.js";
 import T from "../../components/T.js";
 
 const GOLD = "#C9A96E";
@@ -120,6 +121,13 @@ export default async function ReviewPage() {
     .eq("status", "pending")
     .order("created_at", { ascending: true });
 
+  // Published entries, newest first, for the reviewer's delete tool.
+  const { data: published } = await supabase
+    .from("entries")
+    .select("id, title_en, title_km")
+    .eq("status", "published")
+    .order("created_at", { ascending: false });
+
   return (
     <div style={{ backgroundColor: PARCHMENT, minHeight: "80vh", padding: "56px 20px 80px" }}>
       <div style={{ maxWidth: 800, margin: "0 auto" }}>
@@ -163,6 +171,15 @@ export default async function ReviewPage() {
         ) : (
           <ReviewQueue initialEntries={entries || []} />
         )}
+        <section style={{ marginTop: 64 }}>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, fontWeight: 700, color: INK, marginBottom: 6 }}>
+            <T en="Published Entries" km="សំណង់ដែលបានផ្សាយ" />
+          </h2>
+          <p style={{ fontSize: 14, color: "#6A6A6A", marginBottom: 20 }}>
+            <T en="Reviewers can remove any published entry. Deleting is permanent." km="អ្នកត្រួតពិនិត្យអាចលុបសំណង់ដែលបានផ្សាយណាមួយ។ ការលុបគឺអចិន្ត្រៃយ៍។" />
+          </p>
+          <PublishedList initialEntries={published || []} />
+        </section>
       </div>
     </div>
   );

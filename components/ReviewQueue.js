@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "../lib/supabase/client.js";
 import { useLanguage } from "./LanguageContext.js";
+import ConfirmDialog from "./ConfirmDialog.js";
 
 const GOLD = "#C9A96E";
 const INK = "#1A1A1A";
@@ -17,6 +18,27 @@ export default function ReviewQueue({ initialEntries }) {
   const [busy, setBusy] = useState({}); // entry id → true while RPC in flight
   const [errors, setErrors] = useState({}); // entry id → error message
   const supabase = useMemo(() => createClient(), []);
+  const [deleteTarget, setDeleteTarget] = useState(null); // entry awaiting confirmation
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+
+  // Reviewers may delete any entry. The database policy decides: a refusal
+  // comes back as zero deleted rows, so we check for a returned row.
+  async function confirmDelete() {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    setDeleteError("");
+    const { data, error } = await supabase.from("entries").delete().eq("id", deleteTarget.id).select();
+    if (error || !data || data.length === 0) {
+      console.error(error || "Delete affected zero rows (blocked by RLS).");
+      setDeleteError(isKhmer ? "មិនអាចលុបសំណង់នេះបានទេ។ សូមព្យាយាមម្តងទៀត។" : "Couldn't delete this entry. Please try again.");
+      setDeleting(false);
+      return;
+    }
+    setEntries((prev) => prev.filter((e) => e.id !== deleteTarget.id));
+    setDeleteTarget(null);
+    setDeleting(false);
+  }
 
   // The server sends a fresh list on every router.refresh(); adopt it.
   useEffect(() => { setEntries(initialEntries); }, [initialEntries]);
@@ -265,10 +287,43 @@ export default function ReviewQueue({ initialEntries }) {
               >
                 {isKhmer ? "ត្រឡប់វិញ" : "Return"}
               </button>
+              <button
+                type="button"
+                disabled={isBusy}
+                onClick={() => { setDeleteError(""); setDeleteTarget(entry); }}
+                style={{
+                  marginLeft: "auto",
+                  padding: "11px 20px",
+                  backgroundColor: "#FFFFFF",
+                  color: "#B4452F",
+                  border: "1px solid #D98B74",
+                  borderRadius: 4,
+                  fontSize: 11,
+                  fontWeight: 700,
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  cursor: isBusy ? "not-allowed" : "pointer",
+                  fontFamily: "'Inter', sans-serif",
+                }}
+              >
+                {isKhmer ? "លុប" : "Delete"}
+              </button>
             </div>
           </div>
         );
       })}
+
+      <ConfirmDialog
+        open={Boolean(deleteTarget)}
+        title={isKhmer ? "លុបសំណង់នេះមែនទេ?" : "Delete this entry?"}
+        itemName={deleteTarget ? (isKhmer ? (deleteTarget.title_km || deleteTarget.title_en) : deleteTarget.title_en) : ""}
+        message={isKhmer ? "សំណង់នេះនឹងត្រូវលុបជាអចិន្ត្រៃយ៍ ហើយអ្នករួមចំណែកនឹងមិនអាចយកមកវិញបានទេ។" : "This permanently removes the entry, and the contributor will not be able to recover it."}
+        confirmLabel={isKhmer ? "លុបជាអចិន្ត្រៃយ៍" : "Delete permanently"}
+        busy={deleting}
+        error={deleteError}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

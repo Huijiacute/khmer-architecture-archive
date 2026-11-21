@@ -14,6 +14,7 @@ import { useLanguage } from "./LanguageContext.js";
 function rowToEntry(row) {
   return {
     id: row.id,
+    owner: row.owner,
     title: row.title_en,
     titleEn: row.title_en,
     titleKm: row.title_km,
@@ -61,6 +62,8 @@ export default function ArchiveSection() {
   // Track auth so "Add entry" points to the right place: contributors go
   // straight to the form, signed-out visitors are sent to log in first.
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [userId, setUserId] = useState(null);
+  const [isReviewer, setIsReviewer] = useState(false);
 
   // One shared browser client. Creating multiple @supabase/ssr clients in
   // the same component makes their GoTrue instances contend on the same
@@ -81,12 +84,17 @@ export default function ArchiveSection() {
     return () => window.removeEventListener("archive-search", onNavSearch);
   }, []);
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setIsSignedIn(!!data.session);
-    });
+    const apply = async (session) => {
+      setIsSignedIn(!!session);
+      setUserId(session?.user?.id || null);
+      if (!session) { setIsReviewer(false); return; }
+      const { data } = await supabase.rpc("is_reviewer");
+      setIsReviewer(data === true);
+    };
+    supabase.auth.getSession().then(({ data }) => apply(data.session));
 
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsSignedIn(!!session);
+      apply(session);
     });
 
     return () => listener.subscription.unsubscribe();
@@ -538,6 +546,9 @@ export default function ArchiveSection() {
               imageUrl={entry.imageUrl}
               actionHref={entry.actionHref || (entry.id === 1 ? "/archive/ifl" : `/archive/${entry.id}`)}
               actionText={entry.actionText || "View Detailed →"}
+              entryId={entry.id}
+              canDelete={isReviewer || (!!userId && entry.owner === userId)}
+              onDeleted={(id) => setEntries((prev) => prev.filter((e) => e.id !== id))}
             />
           ))}
         </div>
