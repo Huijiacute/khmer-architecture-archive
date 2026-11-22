@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "./LanguageContext.js";
+import NavSearchSuggestions from "./NavSearchSuggestions.js";
+import { matchTitles, useEntryTitles } from "../lib/useEntryTitles.js";
 
 // Search box for the top navigation. It hands the query to the archive
 // search on the home page: if we're already there it scrolls and filters in
@@ -13,13 +15,17 @@ export default function NavSearch({ fullWidth = false, onDone }) {
   const router = useRouter();
   const [value, setValue] = useState("");
   const [focused, setFocused] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(-1);
+  const titles = useEntryTitles(focused);
+  const items = matchTitles(titles, value);
 
   const label = isKhmer ? "ស្វែងរកក្នុងបណ្ណសារ" : "Search the archive";
 
-  function submit(e) {
-    e.preventDefault();
-    const q = value.trim().normalize("NFC");
+  function run(term) {
+    const q = term.trim().normalize("NFC");
     if (!q) return;
+    setOpen(false);
 
     if (pathname === "/") {
       window.dispatchEvent(new CustomEvent("archive-search", { detail: q }));
@@ -30,7 +36,37 @@ export default function NavSearch({ fullWidth = false, onDone }) {
     onDone?.();
   }
 
+  function submit(e) {
+    e.preventDefault();
+    run(value);
+  }
+
+  function pick(item) {
+    const title = (isKhmer ? item.titleKm || item.titleEn : item.titleEn || item.titleKm) || "";
+    setValue(title);
+    run(title);
+  }
+
+  function onKeyDown(e) {
+    if (e.key === "Escape") return setOpen(false);
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      setOpen(true);
+      const step = e.key === "ArrowDown" ? 1 : -1;
+      // -1 means "nothing highlighted"; arrows wrap through the list and back to it.
+      setActive((a) => {
+        const next = a + step;
+        if (next < -1) return items.length - 1;
+        return next >= items.length ? -1 : next;
+      });
+    } else if (e.key === "Enter" && open && items[active]) {
+      e.preventDefault();
+      pick(items[active]);
+    }
+  }
+
   return (
+    <div style={{ position: "relative", width: fullWidth ? "100%" : undefined }}>
     <form
       role="search"
       onSubmit={submit}
@@ -70,9 +106,14 @@ export default function NavSearch({ fullWidth = false, onDone }) {
       <input
         type="text"
         value={value}
-        onChange={(e) => setValue(e.target.value)}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
+        onChange={(e) => { setValue(e.target.value); setOpen(true); setActive(-1); }}
+        onFocus={() => { setFocused(true); setOpen(true); }}
+        onBlur={() => { setFocused(false); setOpen(false); }}
+        onKeyDown={onKeyDown}
+        role="combobox"
+        aria-expanded={open}
+        aria-controls="nav-search-list"
+        autoComplete="off"
         placeholder={isKhmer ? "ស្វែងរក" : "Search"}
         aria-label={label}
         style={{
@@ -88,5 +129,9 @@ export default function NavSearch({ fullWidth = false, onDone }) {
         }}
       />
     </form>
+    {open && focused && (
+      <NavSearchSuggestions id="nav-search-list" items={items} query={value} activeIndex={active} isKhmer={isKhmer} onPick={pick} />
+    )}
+    </div>
   );
 }

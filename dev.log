@@ -4,106 +4,16 @@
 
    ▲ Next.js 15.5.25
    - Local:        http://localhost:3000
-   - Network:      http://192.168.11.1:3000
+   - Network:      http://172.20.10.10:3000
    - Environments: .env.local
 
  ✓ Starting...
- ✓ Ready in 2.8s
- ○ Compiling /middleware ...
- ✓ Compiled /middleware in 1485ms (173 modules)
+ ✓ Ready in 7.8s
+ ✓ Compiled /middleware in 1544ms
+ ✓ Compiled (173 modules)
  ○ Compiling / ...
 <w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (113kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
 <w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (267kiB) impacts deserialization performance (consider using Buffer instead and decode when needed)
- ✓ Compiled / in 4.6s (747 modules)
- GET / 200 in 5164ms
- ○ Compiling /review ...
- ✓ Compiled /review in 1955ms (810 modules)
- GET /review 200 in 2367ms
- GET / 200 in 530ms
- ○ Compiling /my-entries ...
- ✓ Compiled /my-entries in 521ms (817 modules)
- GET /my-entries 200 in 808ms
- ○ Compiling /archive/[id] ...
- ✓ Compiled /archive/[id] in 554ms (830 modules)
- GET /archive/00000000-0000-0000-0000-000000000000 200 in 1595ms
- GET /review 200 in 489ms
- GET / 200 in 63ms
- GET /archive/0b80e0d0-bf2b-4aad-bab6-44cf55c9ea7b 200 in 45ms
- GET /archive/0b80e0d0-bf2b-4aad-bab6-44cf55c9ea7b 200 in 60ms
- GET / 200 in 24ms
- GET / 200 in 54ms
- GET /archive/0b80e0d0-bf2b-4aad-bab6-44cf55c9ea7b 200 in 34ms
- GET /archive/0b80e0d0-bf2b-4aad-bab6-44cf55c9ea7b 200 in 73ms
- GET / 200 in 34ms
- GET /archive/0b80e0d0-bf2b-4aad-bab6-44cf55c9ea7b 200 in 35ms
- ✓ Compiled in 223ms (306 modules)
- GET /archive/0b80e0d0-bf2b-4aad-bab6-44cf55c9ea7b 200 in 65ms
- GET / 200 in 22ms
- GET / 200 in 49ms
- GET / 200 in 32ms
- GET /review 200 in 70ms
- GET /my-entries 200 in 71ms
- ○ Compiling /login ...
- ✓ Compiled /login in 566ms (837 modules)
- GET /login 200 in 827ms
- GET /archive/7 200 in 45ms
- GET / 200 in 31ms
- GET /archive/7 200 in 63ms
- GET /archive/7 200 in 23ms
- ⨯ ./app/review/page.js:3:1
-Module not found: Can't resolve '../../components/PublishedList.js'
-  1 | import { createClient } from "../../lib/supabase/server.js";
-  2 | import ReviewQueue from "../../components/ReviewQueue.js";
-> 3 | import PublishedList from "../../components/PublishedList.js";
-    | ^
-  4 | import T from "../../components/T.js";
-  5 |
-  6 | const GOLD = "#C9A96E";
-
-https://nextjs.org/docs/messages/module-not-found
- ✓ Compiled in 882ms (830 modules)
- GET /archive/7 200 in 141ms
- GET /review 200 in 215ms
- GET / 200 in 37ms
- GET /archive/7 200 in 36ms
- GET /archive/7 200 in 80ms
- GET /archive/7 200 in 95ms
- GET / 200 in 87ms
- GET /archive/7 200 in 44ms
- ✓ Compiled in 898ms (832 modules)
- ✓ Compiled in 551ms (832 modules)
- GET / 200 in 243ms
- GET /archive/7 200 in 86ms
- GET / 200 in 27ms
- GET / 200 in 101ms
- GET /archive/7 200 in 35ms
- GET /archive/3 200 in 37ms
- GET / 200 in 23ms
- ○ Compiling /archive/ifl ...
- ✓ Compiled /archive/ifl in 705ms (837 modules)
- GET /archive/ifl 200 in 854ms
- GET /archive/3 200 in 47ms
- GET / 200 in 709ms
- GET / 200 in 210ms
- ✓ Compiled in 1648ms (833 modules)
- ○ Compiling /archive/french ...
- ✓ Compiled /archive/french in 964ms (838 modules)
- GET /archive/french 200 in 1665ms
- ✓ Compiled /archive/ifl in 393ms (530 modules)
- GET /archive/ifl 200 in 924ms
- ○ Compiling /archive/iispp ...
- ✓ Compiled /archive/iispp in 735ms (847 modules)
- GET /archive/iispp 200 in 1189ms
- GET /archive/ifl 200 in 153ms
- GET /archive/iispp 200 in 105ms
- GET /archive/french 200 in 165ms
- ✓ Compiled in 1367ms (847 modules)
- GET /archive/french 200 in 513ms
- GET /archive/ifl 200 in 215ms
- ✓ Compiled in 1871ms (773 modules)
- GET /archive/ifl 200 in 1231ms
- GET /archive/iispp 200 in 287ms
- GET /archive/french 200 in 264ms
- GET /archive/2 200 in 291ms
- GET /archive/3 200 in 206ms
- GET /archive/1 200 in 235ms
+ ✓ Compiled / in 8s (753 modules)
+ GET / 200 in 8892ms
+ GET / 200 in 303ms

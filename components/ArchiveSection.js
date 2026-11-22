@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createClient } from "../lib/supabase/client.js";
 import EntryCard from "./EntryCard.js";
 import { useLanguage } from "./LanguageContext.js";
+import { normalizeText } from "../lib/useEntryTitles.js";
 
 // Map a database row (snake_case columns) into the shape the render code
 // and EntryCard already expect (title / titleEn / titleKm / places / imageUrl
@@ -157,42 +158,15 @@ export default function ArchiveSection() {
     };
   }, [supabase]);
 
-  const normalizedQuery = searchQuery.trim().toLowerCase();
+  const normalizedQuery = normalizeText(searchQuery);
 
   const filtered = entries.filter((entry) => {
     if (!normalizedQuery) {
       return true;
     }
 
-    const searchableCorpus = [
-      entry.title,
-      entry.titleEn,
-      entry.titleKm,
-      entry.name,
-      entry.nameKhmer,
-      entry.khmerTitle,
-      entry.description,
-      entry.descriptionEn,
-      entry.descriptionKm,
-      entry.story,
-      entry.storyEn,
-      entry.storyKm,
-      entry.location,
-      entry.locationEn,
-      entry.locationKm,
-      entry.era,
-      entry.eraEn,
-      entry.eraKm,
-      entry.year,
-      entry.yearEn,
-      entry.yearKm,
-      entry.contributor,
-      entry.contributorEn,
-      entry.contributorKm,
-      Array.isArray(entry.places) ? entry.places.join(" ") : "",
-      Array.isArray(entry.placesEn) ? entry.placesEn.join(" ") : "",
-      Array.isArray(entry.placesKm) ? entry.placesKm.join(" ") : "",
-    ]
+    // Search matches the entry title only (English and Khmer).
+    const searchableCorpus = [entry.titleEn, entry.titleKm]
       .filter(Boolean)
       .join(" ")
       .toLowerCase();
